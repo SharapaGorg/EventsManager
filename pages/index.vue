@@ -1,5 +1,5 @@
 <template>
-  <div ref="root" class="bg-red-500">
+  <div ref="root">
     Index page
   </div>
 </template>
