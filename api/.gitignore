@@ -4,7 +4,7 @@ env/
 __pycache__/
 utils/__pycache__
 database/__pycache__
-.vscode
+.vscode/
 .idle/
 base
 tests/
