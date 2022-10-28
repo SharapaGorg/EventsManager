@@ -1,0 +1,10 @@
+app.log
+config.py
+env/
+__pycache__/
+utils/__pycache__
+database/__pycache__
+.vscode
+.idle/
+base
+tests/
