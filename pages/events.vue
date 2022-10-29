@@ -1,15 +1,33 @@
 <template>
   <div ref="schedule">
     <div class="scale-menu">
-      <div class="scale-button">
+      <div class="scale-button" @click="editTimeStep(-900)">
         <span>+</span>
       </div>
-      <div class="scale-button">
+      <div class="scale-button" @click="editTimeStep(900)">
         <span>-</span>
       </div>
     </div>
 
-    <div class="timeline"></div>
+    <div class="timeline">
+      <div
+        v-for="point in timePoints"
+        class="time-point"
+        :key="point.id"
+      >
+        {{ point.hours }} : {{ point.minutes }}
+      </div>
+    </div>
+
+    <Event
+      v-for="event in events"
+      :id="event.id"
+      :key="event.id"
+      :start="event.start"
+      :finish="event.finish"
+      :style="{'transform' : `translateY(${event.indent}px)`}"
+    />
+
   </div>
 </template>
 
@@ -18,46 +36,53 @@ export default {
   name: "events",
   data() {
     return {
-        timePoints: []
+      timePoints: [],
+      events: [],
     }
   },
-  mounted() {
-      this.renderTimeline();
-      console.log(this.timePoints)
+  async mounted() {
+    this.renderTimeline();
+
+    this.events = await this.$axios.$post(this.url, {})
   },
   methods: {
-    renderTimeline() {
+    renderTimeline(step) {
       let day = 60 * 60 * 24
       let timePoints = []
 
       let currentPoint = 0;
       while (currentPoint <= day) {
-          let time = new Date(currentPoint * 1000)
-          console.log(time)
+        let time = new Date((currentPoint - 60 * 60 * 3) * 1000)
 
-          timePoints.push(currentPoint)
-          currentPoint += this.timeStep
+        timePoints.push({
+          id: currentPoint,
+          hours: time.getHours(),
+          minutes: time.getMinutes(),
+        })
+        currentPoint += this.timeStep
       }
 
       this.timePoints = timePoints
     },
     editTimeStep(step) {
-        if (this.timeStep + step <= 0) {
-          alert('Неа')
-          return
-        }
+      if (this.timeStep + step <= 0 || this.timeStep + step > 60 * 60 * 2) {
+        return
+      }
 
-        this.$store.commit('setTimeStep', this.timeStep + step)
+      this.$store.commit('setTimeStep', this.timeStep + step)
     }
   },
   computed: {
     timeStep() {
       return this.$store.state.timeStep
+    },
+    url() {
+      return this.$store.state.url
     }
   },
   watch: {
-    '$store.state.timeStep': (oldValue, newValue) => {
-      console.log(newValue)
+    '$store.state.timeStep'(oldValue, newValue) {
+      this.renderTimeline(oldValue - newValue)
     }
   }
 }
@@ -66,7 +91,7 @@ export default {
 <style scoped>
 
 .scale-menu {
-  @apply flex py-1 px-2 mx-auto w-fit py-3;
+  @apply fixed py-1 px-2 mx-auto w-fit py-3 bottom-0 left-0;
 }
 
 .scale-button {
@@ -76,12 +101,21 @@ export default {
 }
 
 .scale-button:hover {
-  transition : all .25s ease;
+  transition: all .25s ease;
   @apply bg-white text-[#3C3F41];
 }
 
 .scale-button span {
   @apply relative top-[-3px]
+}
+
+.timeline {
+  @apply flex pl-[15px] border-b-2 border-[#434D68] h-[30px];
+  @apply bg-[#8F97AC] w-fit min-w-[100vw];
+}
+
+.time-point {
+  @apply w-[85px] font-bold text-white h-[40px] text-[#434D68];
 }
 
 </style>

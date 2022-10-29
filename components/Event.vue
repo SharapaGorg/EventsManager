@@ -17,30 +17,46 @@ export default {
   name: "Event",
   props: ['start', 'finish', 'id'],
   mounted() {
-    let block = this.$refs.block
-    let blockIndent = this.timeToPixels(this.start)
-    let blockWidth = this.calculateWidth(this.start, this.finish)
-    block.style.transform = `translateX(${blockIndent}px) translateY(3px)`
-    block.style.width = blockWidth + 'px'
+    this.renderEvent()
   },
   methods: {
     selectTask() {
       this.$store.commit('setSelectedTaskId', this.id)
     },
+    renderEvent() {
+      let block = this.$refs.block
+      let blockIndent = this.timeToPixels(this.start)
+      let blockWidth = this.calculateWidth(this.start, this.finish)
+
+      block.style.transform = `translateX(${blockIndent}px) translateY(${3 + this.id * 45}px)`
+      block.style.width = blockWidth + 'px'
+    },
     timeToPixels(time) {
-      let s = time.split(':')
-      let hours = s[0]
-      let minutes = parseInt(s[1]) + hours * 60
-      let startPoint = 2.84 * minutes + 15.5
+      let t = new Date(time * 1000)
+      let hours = t.getHours()
+      let minutes = t.getMinutes() + hours * 60
+
+      let startPoint = 5.68 * minutes / (this.timeStep / 900) + 15.5
       return startPoint
     },
     calculateWidth(startTime, finishTime) {
       let start_ = this.timeToPixels(startTime)
       let finish_ = this.timeToPixels(finishTime)
+
       if (finish_ < start_) {
-        finish_ += 24 * 60 * 2.84
+        finish_ += 24 * 60 * 5.68
       }
       return finish_ - start_
+    }
+  },
+  watch: {
+    '$store.state.timeStep'(oldValue, newValue) {
+        this.renderEvent()
+    }
+  },
+  computed: {
+    timeStep() {
+      return this.$store.state.timeStep
     }
   }
 }

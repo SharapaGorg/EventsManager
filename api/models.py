@@ -1,9 +1,9 @@
-import sqlalchemy
-
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     Column,
     Float,
+    ForeignKey,
     Integer,
     Text
 )
@@ -15,7 +15,16 @@ class Event(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(Text)
-    link = Column(Text)
+    link = Column(Text, nullable=True)
     description = Column(Text)
     start_timestamp = Column(Float)
     finish_timestamp = Column(Float)
+    topic_id = Column(Integer, ForeignKey("topics.id"))
+
+
+class Topic(Base):
+    __tablename__ = 'topics'
+
+    id = Column(Integer, primary_key=True)
+    title = Column(Text)
+    event = relationship("Event")
