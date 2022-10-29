@@ -1,5 +1,5 @@
 export const state = () => ({
-  url : 'http://127.0.0.1:5000/events',
+  url : 'http://127.0.0.1:5000/',
   timeStep : 900 // 15 minutes
 })
 

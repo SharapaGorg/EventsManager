@@ -34,7 +34,8 @@ def get_events(
             'link' : e.link,
             'description' : e.description,
             'start' : e.start_timestamp,
-            'finish' : e.finish_timestamp
+            'finish' : e.finish_timestamp,
+            'topic_id' : e.topic_id
         }
 
     return events

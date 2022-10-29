@@ -15,7 +15,7 @@
 // точка отсчета - 0 : 00 - 15px
 export default {
   name: "Event",
-  props: ['start', 'finish', 'id'],
+  props: ['start', 'finish', 'id', 'topic'],
   mounted() {
     this.renderEvent()
   },
@@ -28,7 +28,7 @@ export default {
       let blockIndent = this.timeToPixels(this.start)
       let blockWidth = this.calculateWidth(this.start, this.finish)
 
-      block.style.transform = `translateX(${blockIndent}px) translateY(${3 + this.id * 45}px)`
+      block.style.transform = `translateX(${blockIndent}px) translateY(${4 + (this.topic - 1) * 60}px)`
       block.style.width = blockWidth + 'px'
     },
     timeToPixels(time) {
@@ -36,7 +36,7 @@ export default {
       let hours = t.getHours()
       let minutes = t.getMinutes() + hours * 60
 
-      let startPoint = 5.68 * minutes / (this.timeStep / 900) + 15.5
+      let startPoint = 5.68 * minutes / (this.timeStep / 900) + 15.5 + 200
       return startPoint
     },
     calculateWidth(startTime, finishTime) {
@@ -44,7 +44,7 @@ export default {
       let finish_ = this.timeToPixels(finishTime)
 
       if (finish_ < start_) {
-        finish_ += 24 * 60 * 5.68
+        finish_ += 24 * 60 * 5.68 + 200
       }
       return finish_ - start_
     }

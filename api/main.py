@@ -50,6 +50,24 @@ def get_events_():
         return str(e), 400
 
 
+@app.route('/topics', methods=['GET', 'POST'])
+def get_topics_():
+    try:
+        data = request.get_json()
+
+        title = None
+
+        if data:
+            title = data.get('title')
+
+        topics = get_topics(title)
+        return jsonify(topics)
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
+
+
 @app.route('/add_event', methods=['POST'])
 def add_event_():
     try:
@@ -67,5 +85,6 @@ def add_event_():
 
     except Exception as e:
         return str(e), 400
+
 
 app.run(host=HOST, port=PORT, debug=True)
