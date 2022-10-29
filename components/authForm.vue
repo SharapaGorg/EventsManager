@@ -202,6 +202,7 @@ export default {
           let loginAttempt = await this.loginUser()
 
           if (loginAttempt.status === 'SUCCESS') {
+            this.$cookie.set("AUTH_TOKEN", loginAttempt.token, 15)
             await this.$router.replace('schedule')
           }
           else {
@@ -218,7 +219,9 @@ export default {
       } else {
         if (this.signUpStep === this.signUpFields.length - 1 && !reverse) {
           let signUpAttempt = await this.signUp()
+
           if (signUpAttempt.status === 'SUCCESS') {
+            this.$cookie.set("AUTH_TOKEN", signUpAttempt.token, 15)
             await this.$router.replace('schedule')
           }
           else {

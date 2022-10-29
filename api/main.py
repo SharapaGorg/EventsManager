@@ -39,6 +39,7 @@ def get_events_():
         if data:
             start: float = data.get('start')
             finish: float = data.get('finish')
+            jwt : str = data.get('JWT_TOKEN')
 
         events = get_events(start, finish)
         return jsonify(events)
@@ -110,9 +111,10 @@ def login_():
         if login_attempt:
             return {
                 "message" : "Успешный вход!",
-                "status" : "SUCCESS"
+                "status" : "SUCCESS",
+                "token" : login_attempt
             }
-            
+
         return {
             "message": "Неправильные данные, попробуйте еще раз!",
             "status" : "FAIL"
@@ -136,17 +138,19 @@ def register_():
         if not attempt:
             return {
                 "message" : "Аккаунт с таким именем уже существует(",
-                "status" : "FAIL"
+                "status" : "FAIL",
             }
 
         return {
             "message" : f"{login}, приятно с вами познакомиться!",
-            "status" : "SUCCESS"
+            "status" : "SUCCESS",
+            "token" : attempt
         }
 
     except Exception as e:
         logger.error("[AUTH_REG]", str(e))
         return "Что-то пошло не так", 400
+
 
 
 app.run(host=HOST, port=PORT, debug=True)

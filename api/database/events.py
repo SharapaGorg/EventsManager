@@ -5,7 +5,8 @@ Interaction with events table
 from models import Event
 from controller import Session, engine
 from sqlalchemy import select
-
+from config import JWT_ALGORITHM, JWT_KEY
+from jwt import decode
 
 def get_init_events(
     start_timestamp: float = None,
