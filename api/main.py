@@ -1,6 +1,4 @@
-import datetime
 from sys import argv
-from database.topics import add_topic, get_topics
 from utils import logger
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -67,6 +65,7 @@ def get_topics_():
         print(e)
         return str(e), 400
 
+
 @app.route('/event', methods=['POST'])
 def get_concrete_event_():
     try:
@@ -78,6 +77,7 @@ def get_concrete_event_():
 
     except Exception as e:
         return str(e), 400
+
 
 @app.route('/add_event', methods=['POST'])
 def add_event_():
@@ -96,5 +96,57 @@ def add_event_():
 
     except Exception as e:
         return str(e), 400
+
+
+@app.route('/login', methods=['POST'])
+def login_():
+    try:
+        data = request.get_json()
+
+        login: str = data.get('login')
+        password: str = data.get('password')
+
+        login_attempt = login_user(login, password)
+        if login_attempt:
+            return {
+                "message" : "Успешный вход!",
+                "status" : "SUCCESS"
+            }
+            
+        return {
+            "message": "Неправильные данные, попробуйте еще раз!",
+            "status" : "FAIL"
+        }
+
+    except Exception as e:
+        logger.error("[AUTH_LOGIN]", str(e))
+        return "Что-то пошло не так", 400
+
+
+@app.route('/register', methods=['POST'])
+def register_():
+    try:
+        data = request.get_json()
+
+        login: str = data.get('login')
+        password: str = data.get('password')
+
+        attempt = add_user(login, password)
+
+        if not attempt:
+            return {
+                "message" : "Аккаунт с таким именем уже существует(",
+                "status" : "FAIL"
+            }
+
+        return {
+            "message" : f"{login}, приятно с вами познакомиться!",
+            "status" : "SUCCESS"
+        }
+
+    except Exception as e:
+        logger.error("[AUTH_REG]", str(e))
+        return "Что-то пошло не так", 400
+
 
 app.run(host=HOST, port=PORT, debug=True)

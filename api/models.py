@@ -20,11 +20,19 @@ class Event(Base):
     start_timestamp = Column(Float)
     finish_timestamp = Column(Float)
     topic_id = Column(Integer, ForeignKey("topics.id"))
-
+    user_id = Column(Integer, ForeignKey("users.id"))
 
 class Topic(Base):
     __tablename__ = 'topics'
 
     id = Column(Integer, primary_key=True)
     title = Column(Text)
+    event = relationship("Event")
+
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    login = Column(Text)
+    password = Column(Integer)
     event = relationship("Event")
