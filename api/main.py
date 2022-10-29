@@ -1,8 +1,10 @@
+import datetime
 from sys import argv
 from utils import logger
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from database import *
+from utils.utils import get_user_by_jwt
 
 app = Flask(__name__)
 CORS(app)
@@ -40,8 +42,10 @@ def get_events_():
             start: float = data.get('start')
             finish: float = data.get('finish')
             jwt : str = data.get('JWT_TOKEN')
-
-        events = get_events(start, finish)
+        
+        print(jwt)
+        user = get_user_by_jwt(jwt)
+        events = get_events(user['id'], start, finish)
         return jsonify(events)
 
     except Exception as e:
@@ -58,6 +62,7 @@ def get_topics_():
 
         if data:
             title = data.get('title')
+            jwt = data.get('JWT_TOKEN')
 
         topics = get_topics(title)
         return jsonify(topics)
@@ -90,8 +95,12 @@ def add_event_():
         description: str = data.get('description')
         start: float = data.get('start')
         finish: float = data.get('finish')
+        topic_id : int = data.get('topic_id')
+        jwt : str = data.get('jwt')
 
-        add_event(title, link, description, start, finish)
+        user = get_user_by_jwt(jwt)
+
+        add_event(title, link, description, start, finish, topic_id, user['id'])
 
         return 'success'
 
@@ -151,6 +160,9 @@ def register_():
         logger.error("[AUTH_REG]", str(e))
         return "Что-то пошло не так", 400
 
+# start = datetime.datetime.now() - datetime.timedelta(hours=4)
+# finish = start + datetime.timedelta(hours=2)
 
+# add_event("Авиахакатон", "https://aviahack.com/", "Базируем основную базу", start.timestamp(), finish.timestamp(), 1, 1)
 
 app.run(host=HOST, port=PORT, debug=True)

@@ -31,6 +31,8 @@ export default {
 
       block.style.transform = `translateX(${blockIndent}px) translateY(${4 + (this.topic - 1) * 60}px)`
       block.style.width = blockWidth + 'px'
+
+
     },
     timeToPixels(time) {
       let t = new Date(time * 1000)

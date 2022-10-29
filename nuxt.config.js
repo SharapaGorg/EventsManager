@@ -37,6 +37,7 @@ export default {
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/axios',
+    'cookie-universal-nuxt'
 
   ],
   axios: {

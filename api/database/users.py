@@ -20,17 +20,16 @@ def add_user(
     if get_user(login) is not None:
         return False
 
-    encrypted_password = encrypt(password, ENCRYPT_CODE)
     user = User(
         login=login,
-        password=encrypted_password
+        password=encrypt(password, ENCRYPT_CODE)
     )
 
     session.add(user)
     session.commit()
 
     return encode(
-        {'login': login, 'password': encrypted_password},
+        {'id' : user.id, 'login': user.login, 'password': user.password},
         JWT_KEY,
         algorithm=JWT_ALGORITHM
     )

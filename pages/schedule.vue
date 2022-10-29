@@ -66,8 +66,12 @@ export default {
     }
 
     this.renderTimeline();
-    this.events = await this.$axios.$post(this.url + 'events', {})
-    this.topics = await this.$axios.$post(this.url + 'topics', {})
+    this.events = await this.$axios.$post(this.url + 'events', {
+      'JWT_TOKEN' : this.$cookies.get("JWT_TOKEN")
+    })
+    this.topics = await this.$axios.$post(this.url + 'topics', {
+      'JWT_TOKEN' : this.$cookies.get("JWT_TOKEN")
+    })
 
     // cancel selecting event
     this.$refs.events.addEventListener('click', (event) => {

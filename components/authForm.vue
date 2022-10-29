@@ -202,7 +202,7 @@ export default {
           let loginAttempt = await this.loginUser()
 
           if (loginAttempt.status === 'SUCCESS') {
-            this.$cookie.set("AUTH_TOKEN", loginAttempt.token, 15)
+            this.$cookies.set("JWT_TOKEN", loginAttempt.token, 15)
             await this.$router.replace('schedule')
           }
           else {
@@ -221,7 +221,7 @@ export default {
           let signUpAttempt = await this.signUp()
 
           if (signUpAttempt.status === 'SUCCESS') {
-            this.$cookie.set("AUTH_TOKEN", signUpAttempt.token, 15)
+            this.$cookies.set("JWT_TOKEN", signUpAttempt.token, 15)
             await this.$router.replace('schedule')
           }
           else {

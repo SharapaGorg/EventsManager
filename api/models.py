@@ -36,3 +36,4 @@ class User(Base):
     login = Column(Text)
     password = Column(Integer)
     event = relationship("Event")
+

@@ -5,14 +5,13 @@ Interaction with events table
 from models import Event
 from controller import Session, engine
 from sqlalchemy import select
-from config import JWT_ALGORITHM, JWT_KEY
-from jwt import decode
 
 def get_init_events(
+    user_id : int,
     start_timestamp: float = None,
     finish_timestamp: float = None
 ) -> list:
-    events = select(Event)
+    events = select(Event).where(Event.user_id == user_id)
     session = Session()
 
     if start_timestamp is not None:
@@ -24,10 +23,11 @@ def get_init_events(
 
 
 def get_events(
+    user_id : int,
     start_timestamp: float = None,
     finish_timestamp: float = None
 ) -> list:
-    events = get_init_events(start_timestamp, finish_timestamp)
+    events = get_init_events(user_id, start_timestamp, finish_timestamp)
 
     for i in range(len(events)):
         e = events[i]
@@ -76,7 +76,8 @@ def add_event(
     description: str,
     start: float,
     finish: float,
-    topic_id: int
+    topic_id: int,
+    user_id : int
 ) -> Event:
 
     session = Session()
@@ -87,7 +88,8 @@ def add_event(
         description=description,
         start_timestamp=start,
         finish_timestamp=finish,
-        topic_id=topic_id
+        topic_id=topic_id,
+        user_id = user_id
     )
 
     session.add(event)
