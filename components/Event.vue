@@ -2,8 +2,9 @@
   <div
     ref="block"
     class="task-block"
-    @click="selectTask"
+    @click.stop="selectEvent"
   >
+    <span>{{ title }}</span>
   </div>
 </template>
 
@@ -15,13 +16,13 @@
 // точка отсчета - 0 : 00 - 15px
 export default {
   name: "Event",
-  props: ['start', 'finish', 'id', 'topic'],
+  props: ['start', 'finish', 'id', 'topic', 'title'],
   mounted() {
     this.renderEvent()
   },
   methods: {
-    selectTask() {
-      this.$store.commit('setSelectedTaskId', this.id)
+    selectEvent() {
+        this.$store.commit('setEvent', this.id)
     },
     renderEvent() {
       let block = this.$refs.block
@@ -52,11 +53,23 @@ export default {
   watch: {
     '$store.state.timeStep'(oldValue, newValue) {
         this.renderEvent()
+    },
+    '$store.state.selectedEvent'(value) {
+      let block = this.$refs.block
+      if (value === this.id) {
+        block.style.borderColor = '#e1dfdf'
+      }
+      else {
+        block.style.borderColor = ''
+      }
     }
   },
   computed: {
     timeStep() {
       return this.$store.state.timeStep
+    },
+    selectedEvent() {
+      return this.$store.state.selectedEvent
     }
   }
 }
@@ -64,7 +77,18 @@ export default {
 
 <style scoped>
 .task-block {
-  @apply h-[50px] bg-[#434D68] inline-block absolute;
-  @apply w-[200px] cursor-pointer;
+  @apply h-[50px] bg-[#23272A] inline-block absolute;
+  @apply w-[200px] cursor-pointer z-20 rounded-md;
+  @apply border-2 border-transparent
 }
+
+.task-block span {
+  @apply text-[#e1dfdf] font-bold block text-center;
+  @apply h-[23px] relative top-[10px] overflow-hidden;
+}
+
+.task-block:hover {
+  @apply border-[#e1dfdf]
+}
+
 </style>

@@ -1,7 +1,10 @@
+/*BLURPLE	#7289DA*/
+/*FULL WHITE	#FFFFFF*/
+/*DARK BUT NOT BLACK	#2C2F33*/
+/*NOT QUITE BLACK	#23272A*/
+
 html {
-  min-width: 100vw;
-  min-height : 100vh;
-  @apply bg-[#3C3F41] overflow-y-hidden;
+  @apply bg-[#008080] overflow-y-hidden;
 }
 
 .noselect {
@@ -12,4 +15,8 @@ html {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+
+.events-window {
+
 }

@@ -6,6 +6,7 @@ from models import Event
 from controller import Session, engine
 from sqlalchemy import select
 
+
 def get_init_events(
     start_timestamp: float = None,
     finish_timestamp: float = None
@@ -20,6 +21,7 @@ def get_init_events(
 
     return list(session.scalars(events))
 
+
 def get_events(
     start_timestamp: float = None,
     finish_timestamp: float = None
@@ -29,36 +31,62 @@ def get_events(
     for i in range(len(events)):
         e = events[i]
         events[i] = {
-            'id' : e.id,
-            'title' : e.title,
-            'link' : e.link,
-            'description' : e.description,
-            'start' : e.start_timestamp,
-            'finish' : e.finish_timestamp,
-            'topic_id' : e.topic_id
+            'id': e.id,
+            'title': e.title,
+            'link': e.link,
+            'description': e.description,
+            'start': e.start_timestamp,
+            'finish': e.finish_timestamp,
+            'topic_id': e.topic_id
         }
 
     return events
 
 
+def get_init_event(id: int) -> Event:
+    return select(Event).where(Event.id == id)
+
+
+def get_event(id: int) -> dict:
+    session = Session()
+    event = get_init_event(id)
+
+    events_ = list(session.scalars(event))
+
+    if not events_:
+        return None
+
+    e = events_[0]
+
+    return {
+        'id': e.id,
+        'title': e.title,
+        'link': e.link,
+        'description': e.description,
+        'start': e.start_timestamp,
+        'finish': e.finish_timestamp,
+        'topic_id': e.topic_id
+    }
+
+
 def add_event(
-    title : str,
-    link : str,
-    description : str,
-    start : float,
-    finish : float,
-    topic_id : int
+    title: str,
+    link: str,
+    description: str,
+    start: float,
+    finish: float,
+    topic_id: int
 ) -> Event:
-    
+
     session = Session()
 
     event = Event(
-        title = title,
-        link = link,
-        description = description,
-        start_timestamp = start,
-        finish_timestamp = finish,
-        topic_id = topic_id
+        title=title,
+        link=link,
+        description=description,
+        start_timestamp=start,
+        finish_timestamp=finish,
+        topic_id=topic_id
     )
 
     session.add(event)
@@ -66,10 +94,12 @@ def add_event(
 
     return event
 
+
 def drop_events_table():
     Event.__table__.drop(engine)
 
-def delete_event(event : Event) -> None:
+
+def delete_event(event: Event) -> None:
     _session = Session()
     _session.delete(event)
     _session.commit()
