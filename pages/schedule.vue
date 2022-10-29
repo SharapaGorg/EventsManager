@@ -8,42 +8,42 @@
         <span>-</span>
       </div>
     </div>
-      <div class="topics" ref="topics">
-          <div
-            v-for="topic in topics"
-            :key="topic.id"
-            class="topic"
-          >
-            {{ topic.title }}
-          </div>
+    <div class="topics" ref="topics">
+      <div
+        v-for="topic in topics"
+        :key="topic.id"
+        class="topic"
+      >
+        {{ topic.title }}
       </div>
+    </div>
 
-      <div class="sidebar" v-show="showSideBar">
-        <div class="side-title">{{ selectedEvent.title }}</div>
-        <div class="side-description">{{ selectedEvent.description}}</div>
-      </div>
 
-      <div ref='timeline' class="timeline">
-        <div
-          v-for="point in timePoints"
-          class="time-point"
-          :key="point.id"
-        >
-          {{ point.hours }} : {{ point.minutes }}
-        </div>
-      </div>
+    <div class="sidebar" v-show="showSideBar">
+      <a class="side-title" :href='"events/" + selectedEvent.id'>{{ selectedEvent.title }}</a>
+      <div class="side-description">{{ selectedEvent.description }}</div>
+    </div>
 
-      <div class="events" ref="events">
-        <Event
-          v-for="event in events"
-          :id="event.id"
-          :key="event.id"
-          :start="event.start"
-          :finish="event.finish"
-          :topic="event.topic_id"
-          :title="event.title"/>
-<!--          @click="selectEvent(event.id)"-->
+    <div ref='timeline' class="timeline">
+      <div
+        v-for="point in timePoints"
+        class="time-point"
+        :key="point.id"
+      >
+        {{ point.hours }} : {{ point.minutes }}
       </div>
+    </div>
+
+    <div class="events" ref="events">
+      <Event
+        v-for="event in events"
+        :id="event.id"
+        :key="event.id"
+        :start="event.start"
+        :finish="event.finish"
+        :topic="event.topic_id"
+        :title="event.title"/>
+    </div>
   </div>
 </template>
 
@@ -54,15 +54,15 @@ export default {
     return {
       timePoints: [],
       events: [],
-      topics : [],
-      showSideBar : false,
-      selectedEvent : {}
+      topics: [],
+      showSideBar: false,
+      selectedEvent: {}
     }
   },
   async mounted() {
     let localTimeStep = localStorage.getItem('timeStep')
     if (localTimeStep) {
-        this.setTimeStep(parseInt(localTimeStep))
+      this.setTimeStep(parseInt(localTimeStep))
     }
 
     this.renderTimeline();
@@ -85,9 +85,9 @@ export default {
       this.$store.commit('setTimeStep', value)
     },
     async getEvent(id) {
-        return await this.$axios.$post(this.url + 'event', {
-          id : id
-        })
+      return await this.$axios.$post(this.url + 'event', {
+        id: id
+      })
     },
     renderTimeline() {
       let day = 60 * 60 * 24
@@ -128,13 +128,14 @@ export default {
     '$store.state.timeStep'(newValue, oldValue) {
       this.renderTimeline()
     },
-    async '$store.state.selectedEvent' (newValue, oldValue) {
+    async '$store.state.selectedEvent'(newValue, oldValue) {
       if (isNaN(newValue)) {
         this.showSideBar = false
         return
       }
 
       this.selectedEvent = await this.getEvent(newValue)
+      console.log(this.selectedEvent)
       this.showSideBar = true
     }
   }
@@ -169,7 +170,7 @@ export default {
 }
 
 .events {
-  height : calc(100vh - 200px);
+  height: calc(100vh - 200px);
   @apply w-fit min-w-[100vw]
 }
 
@@ -197,8 +198,12 @@ export default {
 }
 
 .sidebar .side-title {
-  @apply text-xl text-center underline;
+  @apply text-xl text-center;
   @apply block;
+}
+
+.side-title:hover {
+  @apply underline;
 }
 
 .sidebar .side-description {
@@ -207,7 +212,7 @@ export default {
 }
 
 .side-description::-webkit-scrollbar {
-  width : 0 !important;
+  width: 0 !important;
 }
 
 </style>
