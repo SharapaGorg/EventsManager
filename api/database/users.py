@@ -55,8 +55,7 @@ def get_user(login: str) -> dict:
         'login': e.login,
         'password': e.password
     }
-
-
+    
 def login_user(login: str, password: str):
     user = get_user(login)
 

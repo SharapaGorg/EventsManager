@@ -41,7 +41,7 @@ export default {
 
 .event-card {
   @apply rounded-md bg-[#23272A] w-1/3 mx-auto text-[#e1dfdf];
-  @apply my-4 px-2 py-5
+  @apply px-2 py-5 relative top-[70px]
 }
 
 .event-card .title {

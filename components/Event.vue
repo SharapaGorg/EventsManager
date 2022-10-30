@@ -31,16 +31,13 @@ export default {
 
       block.style.transform = `translateX(${blockIndent}px) translateY(${4 + (this.topic - 1) * 60}px)`
       block.style.width = blockWidth + 'px'
-
-
     },
     timeToPixels(time) {
       let t = new Date(time * 1000)
       let hours = t.getHours()
       let minutes = t.getMinutes() + hours * 60
 
-      let startPoint = 5.68 * minutes / (this.timeStep / 900) + 15.5 + 200
-      return startPoint
+      return 5.68 * minutes / (this.timeStep / 900) + 15.5 + 200
     },
     calculateWidth(startTime, finishTime) {
       let start_ = this.timeToPixels(startTime)

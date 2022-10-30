@@ -43,7 +43,6 @@ def get_events_():
             finish: float = data.get('finish')
             jwt : str = data.get('JWT_TOKEN')
         
-        print(jwt)
         user = get_user_by_jwt(jwt)
         events = get_events(user['id'], start, finish)
         return jsonify(events)
@@ -96,7 +95,7 @@ def add_event_():
         start: float = data.get('start')
         finish: float = data.get('finish')
         topic_id : int = data.get('topic_id')
-        jwt : str = data.get('jwt')
+        jwt : str = data.get('JWT_TOKEN')
 
         user = get_user_by_jwt(jwt)
 
@@ -159,6 +158,25 @@ def register_():
     except Exception as e:
         logger.error("[AUTH_REG]", str(e))
         return "Что-то пошло не так", 400
+
+@app.route('/user', methods=['POST'])
+def get_user_info_():
+    try:
+        data = request.get_json()
+
+        jwt = data.get('JWT_TOKEN')
+
+        if jwt is None:
+            return {}
+
+        user = get_user_by_jwt(jwt)
+        user['password'] = 'NO-READABLE'
+
+        return user
+
+    except Exception as e:
+        print(e)
+        return str(e), 400
 
 # start = datetime.datetime.now() - datetime.timedelta(hours=4)
 # finish = start + datetime.timedelta(hours=2)

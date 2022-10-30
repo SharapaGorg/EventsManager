@@ -169,13 +169,13 @@ export default {
 }
 
 .timeline {
-  @apply flex pl-[215px] border-b-2 border-[#434D68] h-[30px];
-  @apply bg-[#23272A] w-fit min-w-[100vw];
+  @apply flex pl-[215px] border-b-2 border-[#e1dfdf] h-[30px];
+  @apply bg-[#23272A] w-fit min-w-[100vw] relative top-[40px];
 }
 
 .events {
   height: calc(100vh - 200px);
-  @apply w-fit min-w-[100vw]
+  @apply w-fit min-w-[100vw] relative top-[40px]
 }
 
 .time-point {
@@ -184,16 +184,16 @@ export default {
 
 .topics {
   @apply w-[200px] h-screen;
-  @apply fixed top-[30px] bg-[#23272A] z-20
+  @apply fixed top-[70px] bg-[#23272A] z-20
 }
 
 .topic {
-  @apply px-2 py-4 h-[60px] border-b-2 border-[#434D68] w-screen;
+  @apply px-2 py-4 h-[60px] border-b-2 border-[#e1dfdf] w-screen;
   @apply text-[#e1dfdf] font-bold;
 }
 
 .topic:hover {
-  @apply bg-[#434D68];
+  @apply bg-[#7289DA];
 }
 
 .sidebar {

@@ -1,7 +1,8 @@
 export const state = () => ({
   url : 'http://127.0.0.1:5000/',
   timeStep : 900, // 15 minutes
-  selectedEvent : NaN
+  selectedEvent : NaN,
+  currentUser : ''
 })
 
 export const mutations = {
@@ -10,5 +11,8 @@ export const mutations = {
   },
   setEvent(state, value) {
     state.selectedEvent = value
+  },
+  setCurrentUser(state, value) {
+    state.currentUser = value
   }
 }

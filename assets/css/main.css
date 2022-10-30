@@ -4,7 +4,7 @@
 /*NOT QUITE BLACK	#23272A*/
 
 html {
-  @apply bg-[#008080] overflow-y-hidden;
+  @apply bg-[#434D68] overflow-y-hidden;
 }
 
 .noselect {

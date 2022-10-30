@@ -203,6 +203,7 @@ export default {
 
           if (loginAttempt.status === 'SUCCESS') {
             this.$cookies.set("JWT_TOKEN", loginAttempt.token, 15)
+            this.setUser(this.loginLogin)
             await this.$router.replace('schedule')
           }
           else {
@@ -249,6 +250,9 @@ export default {
         login: this.signupLogin,
         password: this.signupPassword
       })
+    },
+    setUser(login) {
+      this.$store.commit("setCurrentUser", login)
     }
   }
 }
@@ -259,7 +263,7 @@ export default {
   font-family: 'Ubuntu', sans-serif;
   background: url("https://i.gifer.com/hyE.gif") center;
   @apply h-[550px] w-[350px] rounded-md mx-auto bg-black;
-  @apply pt-3 mt-6;
+  @apply pt-3 relative top-[100px];
 }
 
 .form-content {
