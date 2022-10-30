@@ -1,5 +1,11 @@
 <template>
   <div ref="schedule" class="events-window">
+
+    <topic-modal
+      v-show="showTopicModal"
+      @closeTopicModal="showTopicModal=false"
+    />
+
     <div class="scale-menu">
       <div class="scale-button noselect" @click="editTimeStep(-900)">
         <span>+</span>
@@ -17,11 +23,11 @@
         {{ topic.title }}
       </div>
 
-      <div class="add-topic" @click="$router.replace('/add_topic')">
-        <div class="plus">
-          <span class="relative top-[-10px] noselect">+</span>
+        <div class="add-topic" @click="showTopicModal = true">
+          <div class="plus">
+            <span class="relative top-[-10px] noselect">+</span>
+          </div>
         </div>
-      </div>
     </div>
 
 
@@ -62,7 +68,8 @@ export default {
       events: [],
       topics: [],
       showSideBar: false,
-      selectedEvent: {}
+      selectedEvent: {},
+      showTopicModal : false
     }
   },
   async mounted() {
@@ -117,6 +124,7 @@ export default {
 
       this.timePoints = timePoints
     },
+
     editTimeStep(step) {
       if (this.timeStep + step <= 0 || this.timeStep + step > 60 * 60 * 2) {
         return
@@ -145,7 +153,6 @@ export default {
       }
 
       this.selectedEvent = await this.getEvent(newValue)
-      console.log(this.selectedEvent)
       this.showSideBar = true
     }
   }
@@ -199,8 +206,7 @@ export default {
 }
 
 .topic:hover {
-  opacity: .5;
-  @apply bg-[#7289DA];
+  background : rgba(114, 137, 218, 0.5);
 }
 
 .add-topic {

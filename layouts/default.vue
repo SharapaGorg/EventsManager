@@ -55,7 +55,6 @@ export default {
     },
     async activateAccButton() {
       if (this.user) {
-        console.log(this.user)
         this.showMenu = !this.showMenu
       }
     }
@@ -63,7 +62,6 @@ export default {
   watch: {
     '$store.state.currentUser'(value) {
       this.user = value
-      console.log(this.user, value)
     }
   },
   computed: {

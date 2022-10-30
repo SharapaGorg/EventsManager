@@ -2,7 +2,7 @@ export const state = () => ({
   url : 'http://127.0.0.1:5000/',
   timeStep : 900, // 15 minutes
   selectedEvent : NaN,
-  currentUser : ''
+  currentUser : '',
 })
 
 export const mutations = {
