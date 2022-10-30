@@ -7,9 +7,10 @@ from controller import Session, engine
 from sqlalchemy import select
 
 def get_init_topics(
+    user_id : int,
     title : str = None
 ) -> list:
-    topics = select(Topic)
+    topics = select(Topic).where(Topic.user_id == user_id)
     session = Session()
 
     if title is not None:
@@ -18,9 +19,10 @@ def get_init_topics(
     return list(session.scalars(topics))
 
 def get_topics(
+    user_id : int,
     title : str = None,
 ) -> list:
-    topics = get_init_topics(title)
+    topics = get_init_topics(user_id, title)
 
     for i in range(len(topics)):
         e = topics[i]

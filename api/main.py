@@ -63,7 +63,8 @@ def get_topics_():
             title = data.get('title')
             jwt = data.get('JWT_TOKEN')
 
-        topics = get_topics(title)
+        user = get_user_by_jwt(jwt)
+        topics = get_topics(user['id'], title)
         return jsonify(topics)
 
     except Exception as e:

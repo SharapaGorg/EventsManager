@@ -27,6 +27,8 @@ class Topic(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(Text)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    
     event = relationship("Event")
 
 class User(Base):
@@ -35,5 +37,6 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     login = Column(Text)
     password = Column(Integer)
-    event = relationship("Event")
 
+    event = relationship("Event")
+    topic = relationship("Topic")

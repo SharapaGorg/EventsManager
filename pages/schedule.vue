@@ -16,6 +16,12 @@
       >
         {{ topic.title }}
       </div>
+
+      <div class="add-topic" @click="$router.replace('/add_topic')">
+        <div class="plus">
+          <span class="relative top-[-10px] noselect">+</span>
+        </div>
+      </div>
     </div>
 
 
@@ -193,17 +199,35 @@ export default {
 }
 
 .topic:hover {
+  opacity: .5;
   @apply bg-[#7289DA];
 }
 
+.add-topic {
+  transition: all .25s ease;
+  @apply w-[190px] mx-auto h-[60px] rounded-lg border-[#e1dfdf];
+  @apply border-2 my-2 border-dotted pt-[5px] cursor-pointer text-[#e1dfdf];
+}
+
+.add-topic .plus {
+  border-radius: 100%;
+  @apply h-[45px] w-[45px] border-[#e1dfdf] border-2 mx-auto;
+  @apply border-dotted text-center text-5xl font-bold;
+}
+
+.add-topic:hover {
+  @apply bg-[#e1dfdf] text-[#23272A] border-[#23272A]
+}
+
 .sidebar {
-  @apply fixed bg-[#23272A] h-[170px] bottom-0 z-30 w-screen;
-  @apply border-t-2 border-[#434D68] pt-1 text-[#e1dfdf]
+  border-radius: 0px 5px 0px 0px;
+  @apply fixed bg-[#23272A] h-[170px] bottom-0 z-30 w-[340px];
+  @apply border-t-2 border-r-2 border-[#e1dfdf] pt-1 text-[#e1dfdf];
 }
 
 .sidebar .side-title {
   @apply text-xl text-center;
-  @apply block;
+  @apply block w-[95%] mx-auto;
 }
 
 .side-title:hover {
@@ -211,7 +235,7 @@ export default {
 }
 
 .sidebar .side-description {
-  @apply h-[130px] max-w-[370px] mx-auto;
+  @apply h-[130px] w-[95%] mx-auto;
   @apply overflow-y-auto text-justify;
 }
 
