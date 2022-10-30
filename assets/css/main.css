@@ -17,6 +17,12 @@ html {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+.warning {
+  background : #cdda2f;
+  @apply px-2 py-1 rounded-md text-center text-[#23272A];
+  @apply font-bold;
+}
+
 .events-window {
 
 }

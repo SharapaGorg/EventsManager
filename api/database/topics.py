@@ -35,12 +35,14 @@ def get_topics(
 
 
 def add_topic(
+    user_id: int,
     title : str
 ) -> Topic:
     
     session = Session()
 
     topic = Topic(
+        user_id=user_id,
         title = title
     )
 

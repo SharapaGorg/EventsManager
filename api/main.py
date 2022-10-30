@@ -107,6 +107,21 @@ def add_event_():
     except Exception as e:
         return str(e), 400
 
+@app.route('/add_topic', methods=['POST'])
+def add_topic_():
+    try:
+        data = request.get_json()
+
+        title : str = data.get('title')
+        jwt : str = data.get('JWT_TOKEN')
+
+        user = get_user_by_jwt(jwt)
+
+        add_topic(user['id'], title)
+        return 'success'
+
+    except Exception as e:
+        return str(e), 400
 
 @app.route('/login', methods=['POST'])
 def login_():
