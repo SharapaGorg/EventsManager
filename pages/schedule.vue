@@ -6,6 +6,12 @@
       @closeTopicModal="showTopicModal=false"
     />
 
+    <event-modal
+      v-show="showEventModal"
+      @closeEventModal = "showEventModal = false"
+    />
+
+
     <div class="scale-menu">
       <div class="scale-button noselect" @click="editTimeStep(-900)">
         <span>+</span>
@@ -23,17 +29,11 @@
         {{ topic.title }}
       </div>
 
-        <div class="add-topic" @click="showTopicModal = true">
-          <div class="plus">
-            <span class="relative top-[-10px] noselect">+</span>
-          </div>
+      <div class="add-topic" @click="showTopicModal = true">
+        <div class="plus">
+          <span class="relative top-[-10px] noselect">+</span>
         </div>
-    </div>
-
-
-    <div class="sidebar" v-show="showSideBar">
-      <a class="side-title" :href='"events/" + selectedEvent.id'>{{ selectedEvent.title }}</a>
-      <div class="side-description">{{ selectedEvent.description }}</div>
+      </div>
     </div>
 
     <div ref='timeline' class="timeline">
@@ -47,19 +47,44 @@
     </div>
 
     <div class="events" ref="events">
-      <Event
-        v-for="event in events"
-        :id="event.id"
-        :key="event.id"
-        :start="event.start"
-        :finish="event.finish"
-        :topic="event.topic_id"
-        :title="event.title"/>
+<!--      <nuxt-link-->
+<!--        v-for="event in events"-->
+<!--        :key="event.id"-->
+<!--        :to='"events/" + event.id'>-->
+          <Event
+            v-show="event.topic_id !== 0"
+            v-for="event in events"
+            :key="event.id"
+            :id="event.id"
+            :start="event.start"
+            :finish="event.finish"
+            :topic="event.topic_id"
+            :title="event.title"/>
+<!--      </nuxt-link>-->
     </div>
+
+
+    <div class="sidebar" v-show="true">
+      <div class="add-topic" @click="showEventModal = true">
+        <div class="plus">
+          <span class="relative top-[-10px] noselect">+</span>
+        </div>
+      </div>
+
+      <SimpleEvent
+        v-for="event in freeEvents"
+        :key="event.id"
+        :title = "event.title"
+        :id="event.id"
+      />
+
+    </div>
+
   </div>
 </template>
 
 <script>
+
 export default {
   name: "events",
   data() {
@@ -69,7 +94,9 @@ export default {
       topics: [],
       showSideBar: false,
       selectedEvent: {},
-      showTopicModal : false
+      showTopicModal: false,
+      showEventModal : false,
+      freeEvents: []
     }
   },
   async mounted() {
@@ -79,12 +106,10 @@ export default {
     }
 
     this.renderTimeline();
-    this.events = await this.$axios.$post(this.url + 'events', {
-      'JWT_TOKEN' : this.$cookies.get("JWT_TOKEN")
-    })
-    this.topics = await this.$axios.$post(this.url + 'topics', {
-      'JWT_TOKEN' : this.$cookies.get("JWT_TOKEN")
-    })
+
+    this.events = await this.$post('events', {})
+    this.topics = await this.$post('topics', {})
+    this.freeEvents = await this.getFreeEvents()
 
     // cancel selecting event
     this.$refs.events.addEventListener('click', (event) => {
@@ -95,6 +120,11 @@ export default {
     })
   },
   methods: {
+    async $post(link, options) {
+      options['JWT_TOKEN'] = this.$cookies.get('JWT_TOKEN')
+
+      return await this.$axios.$post(this.url + link, options)
+    },
     selectEvent(id) {
       this.$store.commit('setEvent', id)
     },
@@ -132,6 +162,16 @@ export default {
 
       localStorage.setItem('timeStep', this.timeStep + step)
       this.setTimeStep(this.timeStep + step)
+    },
+    async getFreeEvents() {
+      // return await this.$axios.$post(this.url + 'events', {
+      //   'JWT_TOKEN' : this.$cookies.get('JWT_TOKEN'),
+      //   'topic_id' : 0
+      // })
+
+      return await this.$post('events', {
+        'topic_id' : 0
+      })
     }
   },
   computed: {
@@ -206,7 +246,7 @@ export default {
 }
 
 .topic:hover {
-  background : rgba(114, 137, 218, 0.5);
+  background: rgba(114, 137, 218, 0.5);
 }
 
 .add-topic {
@@ -226,9 +266,9 @@ export default {
 }
 
 .sidebar {
-  border-radius: 0px 5px 0px 0px;
-  @apply fixed bg-[#23272A] h-[170px] bottom-0 z-30 w-[340px];
-  @apply border-t-2 border-r-2 border-[#e1dfdf] pt-1 text-[#e1dfdf];
+  @apply fixed bg-[#23272A] h-[270px] bottom-0 z-30 w-screen;
+  @apply border-t-2 border-[#e1dfdf] pt-1 text-[#e1dfdf];
+  @apply grid grid-cols-7 justify-items-center;
 }
 
 .sidebar .side-title {

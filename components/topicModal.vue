@@ -44,9 +44,6 @@ export default {
     this.topics = await this.getTopics()
   },
   methods: {
-    closeTopicModal() {
-
-    },
     async getTopics() {
       return await this.$axios.$post(this.url + 'topics', {
         'JWT_TOKEN': this.$cookies.get('JWT_TOKEN')

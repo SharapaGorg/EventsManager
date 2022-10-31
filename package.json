@@ -13,6 +13,8 @@
     "autoprefixer": "^10.4.13",
     "cookie-universal-nuxt": "^2.2.2",
     "core-js": "^3.25.3",
+    "interact.js": "^1.2.8",
+    "interactjs": "^1.10.17",
     "nuxt": "^2.15.8",
     "postcss": "^8.4.18",
     "tailwindcss": "^3.2.1",

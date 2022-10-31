@@ -4,7 +4,7 @@
     class="task-block"
     @click.stop="selectEvent"
   >
-    <span>{{ title }}</span>
+    <span :href="'/events/' + id">{{ title }}</span>
   </div>
 </template>
 
@@ -14,21 +14,63 @@
 // finish - 1 : 20
 // 1 minute = 2.8px
 // точка отсчета - 0 : 00 - 15px
+
+import interact from 'interactjs'
+
+
 export default {
   name: "Event",
   props: ['start', 'finish', 'id', 'topic', 'title'],
+  data() {
+    return {
+      initIndent : 0
+    }
+  },
   mounted() {
     this.renderEvent()
+
+    let element = this.$refs.block
+    // var element = document.getElementById('grid-snap')
+    let x = 0
+    let y = 0
+
+    let base = this
+    interact(element)
+      .draggable({
+        modifiers: [
+          interact.modifiers.snap({
+            targets: [
+              interact.snappers.grid({x: 85.2, y: 30})
+            ],
+            range: Infinity,
+            relativePoints: [{x: 0, y: 0}]
+          }),
+          interact.modifiers.restrict({
+            restriction: this.$refs.timeline,
+            elementRect: {top: 0, left: 0, bottom: 0, right: 1},
+            endOnly: true
+          })
+        ],
+        inertia: false
+      })
+      .on('dragmove', function (event) {
+        x += event.dx
+        y += event.dy
+
+        console.log(x + base.initIndent, x, base.initIndent)
+        event.target.style.transform = `translateX(${x + base.initIndent - 18.5}px) translateY(${4 + (base.topic - 1) * 60}px)`
+      })
   },
   methods: {
     selectEvent() {
-        this.$store.commit('setEvent', this.id)
+      this.$store.commit('setEvent', this.id)
     },
     renderEvent() {
       let block = this.$refs.block
       let blockIndent = this.timeToPixels(this.start)
       let blockWidth = this.calculateWidth(this.start, this.finish)
 
+      this.initIndent = blockIndent
       block.style.transform = `translateX(${blockIndent}px) translateY(${4 + (this.topic - 1) * 60}px)`
       block.style.width = blockWidth + 'px'
     },
@@ -51,14 +93,13 @@ export default {
   },
   watch: {
     '$store.state.timeStep'(oldValue, newValue) {
-        this.renderEvent()
+      this.renderEvent()
     },
     '$store.state.selectedEvent'(value) {
       let block = this.$refs.block
       if (value === this.id) {
         block.style.borderColor = '#e1dfdf'
-      }
-      else {
+      } else {
         block.style.borderColor = ''
       }
     }
@@ -81,13 +122,17 @@ export default {
   @apply border-2 border-transparent
 }
 
-.task-block span {
+.task-block a, span{
   @apply text-[#e1dfdf] font-bold block text-center;
   @apply h-[23px] relative top-[10px] overflow-hidden;
 }
 
 .task-block:hover {
   @apply border-[#e1dfdf]
+}
+
+.task-block a:hover {
+  @apply underline;
 }
 
 </style>

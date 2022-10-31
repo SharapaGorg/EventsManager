@@ -36,15 +36,16 @@ def get_events_():
     try:
         data = request.get_json()
 
-        start = finish = None
+        start = finish = topic_id = None
 
         if data:
             start: float = data.get('start')
             finish: float = data.get('finish')
+            topic_id : int = data.get('topic_id')
             jwt : str = data.get('JWT_TOKEN')
         
         user = get_user_by_jwt(jwt)
-        events = get_events(user['id'], start, finish)
+        events = get_events(user['id'], start, finish, topic_id)
         return jsonify(events)
 
     except Exception as e:
@@ -194,9 +195,10 @@ def get_user_info_():
         print(e)
         return str(e), 400
 
-# start = datetime.datetime.now() - datetime.timedelta(hours=4)
-# finish = start + datetime.timedelta(hours=2)
+# start = datetime.datetime.now() - datetime.timedelta(hours=10)
+# finish = start + datetime.timedelta(hours=3)
 
-# add_event("Авиахакатон", "https://aviahack.com/", "Базируем основную базу", start.timestamp(), finish.timestamp(), 1, 1)
+# add_event("Перерождение в меч", "https://jut.su/", "Базируем основную базу", start.timestamp(), finish.timestamp(), 1, 1)
+
 
 app.run(host=HOST, port=PORT, debug=True)

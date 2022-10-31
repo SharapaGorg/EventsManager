@@ -9,7 +9,8 @@ from sqlalchemy import select
 def get_init_events(
     user_id : int,
     start_timestamp: float = None,
-    finish_timestamp: float = None
+    finish_timestamp: float = None,
+    topic_id : int = None
 ) -> list:
     events = select(Event).where(Event.user_id == user_id)
     session = Session()
@@ -18,6 +19,8 @@ def get_init_events(
         events = events.where(Event.start_timestamp > start_timestamp)
     if finish_timestamp is not None:
         events = events.where(Event.finish_timestamp < finish_timestamp)
+    if topic_id is not None:
+        events = events.where(Event.topic_id == topic_id)
 
     return list(session.scalars(events))
 
@@ -25,9 +28,10 @@ def get_init_events(
 def get_events(
     user_id : int,
     start_timestamp: float = None,
-    finish_timestamp: float = None
+    finish_timestamp: float = None,
+    topic_id : int = None
 ) -> list:
-    events = get_init_events(user_id, start_timestamp, finish_timestamp)
+    events = get_init_events(user_id, start_timestamp, finish_timestamp, topic_id)
 
     for i in range(len(events)):
         e = events[i]
