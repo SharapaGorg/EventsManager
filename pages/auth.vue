@@ -4,7 +4,12 @@
 
 <script>
 export default {
-  name: "auth"
+  name: "auth",
+  async mounted() {
+    if (this.$cookies.get('JWT_TOKEN')) {
+        await this.$router.replace('/account')
+    }
+  }
 }
 </script>
 

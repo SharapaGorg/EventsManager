@@ -40,25 +40,30 @@ export default {
         modifiers: [
           interact.modifiers.snap({
             targets: [
-              interact.snappers.grid({x: 85.2, y: 30})
+              interact.snappers.grid({x: 85.2, y: 85.2})
             ],
             range: Infinity,
             relativePoints: [{x: 0, y: 0}]
           }),
           interact.modifiers.restrict({
-            restriction: this.$refs.timeline,
-            elementRect: {top: 0, left: 0, bottom: 0, right: 1},
-            endOnly: true
+            // restriction: this.$refs.timeline,
+            // elementRect: {top: 0, left: 0, bottom: 0, right: 1},
+            // endOnly: true
           })
         ],
         inertia: false
       })
       .on('dragmove', function (event) {
+        if (Math.abs(event.dx) < 85.2) {
+          return
+        }
+
         x += event.dx
         y += event.dy
 
+
         console.log(x + base.initIndent, x, base.initIndent)
-        event.target.style.transform = `translateX(${x + base.initIndent - 18.5}px) translateY(${4 + (base.topic - 1) * 60}px)`
+        event.target.style.transform = `translateX(${x}px)`
       })
   },
   methods: {
@@ -71,7 +76,10 @@ export default {
       let blockWidth = this.calculateWidth(this.start, this.finish)
 
       this.initIndent = blockIndent
-      block.style.transform = `translateX(${blockIndent}px) translateY(${4 + (this.topic - 1) * 60}px)`
+      // block.style.transform = `translateX(${blockIndent}px) translateY(${4 + (this.topic - 1) * 60}px)`
+      block.style.left = blockIndent + "px"
+      block.style.top = 4 + (this.topic - 1) * 60 + 'px'
+
       block.style.width = blockWidth + 'px'
     },
     timeToPixels(time) {
