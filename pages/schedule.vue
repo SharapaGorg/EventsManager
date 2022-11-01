@@ -37,9 +37,18 @@
     </div>
 
     <div class="day-line">
-      <img src="../static/arrow-left.svg"/>
+      <img
+        src="../static/arrow-left.svg"
+        @click="changeDay(-1)"
+      />
+
       <span>{{ currentDay }} {{ currentMonth }} / {{ currentYear }}</span>
-      <img src="../static/arrow-left.svg" style="transform : rotate(180deg)"/>
+
+      <img
+        src="../static/arrow-left.svg"
+        style="transform : rotate(180deg)"
+        @click="changeDay(1)"
+      />
     </div>
 
     <div class="timeline">
@@ -128,7 +137,7 @@ export default {
 
     let localDate = localStorage.getItem('selectedDate')
     if (localDate) {
-      this.$store.commit('setSelectedTime', localDate)
+      this.selectDate(localDate)
     }
 
     let currentDate = this.$store.state.selectedDate
@@ -139,6 +148,9 @@ export default {
       options['JWT_TOKEN'] = this.$cookies.get('JWT_TOKEN')
 
       return await this.$axios.$post(this.url + link, options)
+    },
+    selectDate(date) {
+      this.$store.commit('setSelectedTime', date)
     },
     selectEvent(id) {
       this.$store.commit('setEvent', id)
@@ -169,7 +181,14 @@ export default {
 
       this.timePoints = timePoints
     },
+    changeDay(sign) {
+      let date = this.currentDate
+      date.setDate(date.getDate() + sign)
 
+      this.selectDate(date)
+
+      console.log(this.$store.state.selectedDate)
+    },
     editTimeStep(step) {
       if (this.timeStep + step <= 0 || this.timeStep + step > 60 * 60 * 2) {
         return
@@ -179,11 +198,6 @@ export default {
       this.setTimeStep(this.timeStep + step)
     },
     async getFreeEvents() {
-      // return await this.$axios.$post(this.url + 'events', {
-      //   'JWT_TOKEN' : this.$cookies.get('JWT_TOKEN'),
-      //   'topic_id' : 0
-      // })
-
       return await this.$post('events', {
         'topic_id' : 0
       })
