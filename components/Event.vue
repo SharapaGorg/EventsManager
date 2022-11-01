@@ -23,14 +23,15 @@ export default {
   props: ['start', 'finish', 'id', 'topic', 'title'],
   data() {
     return {
-      initIndent : 0
+      initIndent: 0,
+      step: 85.2,
+      leftTranslate: 0
     }
   },
   mounted() {
     this.renderEvent()
 
     let element = this.$refs.block
-    // var element = document.getElementById('grid-snap')
     let x = 0
     let y = 0
 
@@ -40,7 +41,7 @@ export default {
         modifiers: [
           interact.modifiers.snap({
             targets: [
-              interact.snappers.grid({x: 85.2, y: 85.2})
+              interact.snappers.grid({x: base.step, y: 85.2})
             ],
             range: Infinity,
             relativePoints: [{x: 0, y: 0}]
@@ -54,16 +55,17 @@ export default {
         inertia: false
       })
       .on('dragmove', function (event) {
-        if (Math.abs(event.dx) < 85.2) {
+        if (Math.abs(event.dx) < base.step) {
           return
         }
 
         x += event.dx
         y += event.dy
 
-
-        console.log(x + base.initIndent, x, base.initIndent)
         event.target.style.transform = `translateX(${x}px)`
+        base.leftTranslate = x
+
+        base.applyTime()
       })
   },
   methods: {
@@ -76,7 +78,6 @@ export default {
       let blockWidth = this.calculateWidth(this.start, this.finish)
 
       this.initIndent = blockIndent
-      // block.style.transform = `translateX(${blockIndent}px) translateY(${4 + (this.topic - 1) * 60}px)`
       block.style.left = blockIndent + "px"
       block.style.top = 4 + (this.topic - 1) * 60 + 'px'
 
@@ -89,6 +90,13 @@ export default {
 
       return 5.68 * minutes / (this.timeStep / 900) + 15.5 + 200
     },
+    pixelsToTime(pixels) {
+      let withoutIndent = pixels - 215.5
+      let minutes = withoutIndent / 5.68 * (this.timeStep / 900)
+      let date = new Date(minutes * 60 * 1000 - 3 * 3600 * 1000)
+
+      return date
+    },
     calculateWidth(startTime, finishTime) {
       let start_ = this.timeToPixels(startTime)
       let finish_ = this.timeToPixels(finishTime)
@@ -97,6 +105,10 @@ export default {
         finish_ += 24 * 60 * 5.68 + 200
       }
       return finish_ - start_
+    },
+    applyTime() {
+      let date = this.pixelsToTime(this.initIndent + this.leftTranslate)
+      console.log(date)
     }
   },
   watch: {
@@ -130,7 +142,7 @@ export default {
   @apply border-2 border-transparent
 }
 
-.task-block a, span{
+.task-block a, span {
   @apply text-[#e1dfdf] font-bold block text-center;
   @apply h-[23px] relative top-[10px] overflow-hidden;
 }
