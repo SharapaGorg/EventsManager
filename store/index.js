@@ -3,6 +3,7 @@ export const state = () => ({
   timeStep : 900, // 15 minutes
   selectedEvent : NaN,
   currentUser : '',
+  selectedDate : new Date() // day/month/year
 })
 
 export const mutations = {
@@ -14,5 +15,8 @@ export const mutations = {
   },
   setCurrentUser(state, value) {
     state.currentUser = value
+  },
+  setSelectedTime(state, value) {
+    state.selectedDate = value
   }
 }

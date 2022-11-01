@@ -36,7 +36,13 @@
       </div>
     </div>
 
-    <div ref='timeline' class="timeline">
+    <div class="day-line">
+      <img src="../static/arrow-left.svg"/>
+      <span>{{ currentDay }} {{ currentMonth }} / {{ currentYear }}</span>
+      <img src="../static/arrow-left.svg" style="transform : rotate(180deg)"/>
+    </div>
+
+    <div class="timeline">
       <div
         v-for="point in timePoints"
         class="time-point"
@@ -96,7 +102,8 @@ export default {
       selectedEvent: {},
       showTopicModal: false,
       showEventModal : false,
-      freeEvents: []
+      freeEvents: [],
+      months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
   },
   async mounted() {
@@ -118,6 +125,14 @@ export default {
     this.$refs.topics.addEventListener('click', (event) => {
       this.selectEvent(NaN)
     })
+
+    let localDate = localStorage.getItem('selectedDate')
+    if (localDate) {
+      this.$store.commit('setSelectedTime', localDate)
+    }
+
+    let currentDate = this.$store.state.selectedDate
+
   },
   methods: {
     async $post(link, options) {
@@ -180,6 +195,18 @@ export default {
     },
     url() {
       return this.$store.state.url
+    },
+    currentDate() {
+      return this.$store.state.selectedDate
+    },
+    currentYear() {
+      return this.currentDate.getYear() + 1900
+    },
+    currentMonth() {
+      return this.months[this.currentDate.getMonth()]
+    },
+    currentDay() {
+      return this.currentDate.getDay() - 1
     }
   },
   watch: {
@@ -221,6 +248,20 @@ export default {
   @apply relative top-[-3px]
 }
 
+.day-line {
+  @apply h-[30px] w-screen bg-[#23272A] relative top-[40px];
+  @apply border-b-2 border-[#e1dfdf] text-center font-bold;
+  @apply text-[#e1dfdf] flex;
+}
+
+.day-line img {
+  @apply w-[22px] h-[22px] relative top-[3px] cursor-pointer;
+}
+
+.day-line span {
+  @apply block mx-auto w-[90%] text-center;
+}
+
 .timeline {
   @apply flex pl-[215px] border-b-2 border-[#e1dfdf] h-[30px];
   @apply bg-[#23272A] w-fit min-w-[100vw] relative top-[40px];
@@ -237,7 +278,7 @@ export default {
 
 .topics {
   @apply w-[200px] h-screen;
-  @apply fixed top-[70px] bg-[#23272A] z-20
+  @apply fixed top-[100px] bg-[#23272A] z-20
 }
 
 .topic {
