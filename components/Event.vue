@@ -25,7 +25,8 @@ export default {
     return {
       initIndent: 0,
       step: 85.2,
-      leftTranslate: 0
+      leftTranslate: 0,
+      blockWidth: 0
     }
   },
   mounted() {
@@ -70,6 +71,11 @@ export default {
       })
   },
   methods: {
+    async $post(link, options) {
+      options['JWT_TOKEN'] = this.$cookies.get('JWT_TOKEN')
+
+      return await this.$axios.$post(this.url + link, options)
+    },
     selectEvent() {
       this.$store.commit('setEvent', this.id)
     },
@@ -78,7 +84,9 @@ export default {
       let blockIndent = this.timeToPixels(this.start)
       let blockWidth = this.calculateWidth(this.start, this.finish)
 
+      this.blockWidth = blockWidth
       this.initIndent = blockIndent
+
       block.style.left = blockIndent + "px"
       block.style.top = 4 + (this.topic - 1) * 60 + 'px'
 
@@ -107,9 +115,39 @@ export default {
       }
       return finish_ - start_
     },
-    applyTime() {
-      let date = this.pixelsToTime(this.initIndent + this.leftTranslate)
-      console.log('[local event time]', date)
+    async applyTime() {
+      let start_time = this.pixelsToTime(this.initIndent + this.leftTranslate)
+      let finish_time = this.pixelsToTime(this.initIndent + this.leftTranslate + this.blockWidth)
+
+      let date = this.$store.state.selectedDate
+
+      let s = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        start_time.getHours(),
+        start_time.getMinutes(),
+        start_time.getSeconds()
+      )
+
+      let f = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        finish_time.getHours(),
+        finish_time.getMinutes(),
+        finish_time.getSeconds()
+      )
+
+      console.log(s)
+      console.log(f)
+
+      let req = await this.$post('update_event', {
+        event_id : this.id,
+        start : s.getTime(),
+        finish : f.getTime()
+      })
+      console.log(req)
     }
   },
   watch: {
@@ -126,6 +164,9 @@ export default {
     }
   },
   computed: {
+    url() {
+      return this.$store.state.url
+    },
     timeStep() {
       return this.$store.state.timeStep
     },

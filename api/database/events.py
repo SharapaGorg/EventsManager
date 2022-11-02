@@ -2,17 +2,44 @@
 Interaction with events table
 """
 
+import datetime
 from models import Event
 from controller import Session, engine
 from sqlalchemy import select
-from utils import parse_date
+from utils import logger
+
+
+def update_event(event_id : int, start, finish, user_id : int):
+    session = Session()
+
+    event = get_init_event(event_id)
+    event = session.execute(event).scalar()
+
+    print('editing')
+
+    if event.user_id != user_id:
+        return
+    
+    print('editing accepted')
+
+    s = datetime.datetime.fromtimestamp(start / 1000)
+    f = datetime.datetime.fromtimestamp(finish / 1000)
+
+    logger.info(s, f)
+
+    setattr(event, "start_timestamp", start / 1000)
+    setattr(event, "finish_timestamp", finish / 1000)
+
+    session.commit()
+
+    
 
 def get_init_events(
-    user_id : int,
+    user_id: int,
     date,
     start_timestamp: float = None,
     finish_timestamp: float = None,
-    topic_id : int = None
+    topic_id: int = None
 ) -> list:
     events = select(Event).where(Event.user_id == user_id)
     session = Session()
@@ -30,13 +57,14 @@ def get_init_events(
 
 
 def get_events(
-    user_id : int,
-    date : str,
+    user_id: int,
+    date: str,
     start_timestamp: float = None,
     finish_timestamp: float = None,
-    topic_id : int = None
+    topic_id: int = None
 ) -> list:
-    events = get_init_events(user_id, date, start_timestamp, finish_timestamp, topic_id)
+    events = get_init_events(
+        user_id, date, start_timestamp, finish_timestamp, topic_id)
 
     for i in range(len(events)):
         e = events[i]
@@ -81,13 +109,13 @@ def get_event(id: int) -> dict:
 
 def add_event(
     title: str,
-    date : str,
+    date: str,
     link: str,
     description: str,
     start: float,
     finish: float,
     topic_id: int,
-    user_id : int
+    user_id: int
 ) -> Event:
 
     session = Session()
@@ -100,7 +128,7 @@ def add_event(
         start_timestamp=start,
         finish_timestamp=finish,
         topic_id=topic_id,
-        user_id = user_id
+        user_id=user_id
     )
 
     session.add(event)

@@ -109,6 +109,24 @@ def add_event_():
     except Exception as e:
         return str(e), 400
 
+@app.route('/update_event', methods=['POST'])
+def update_event_():
+    try:
+        data = request.get_json()
+
+        jwt : str = data.get('JWT_TOKEN')
+        id : float = data.get('event_id')
+        start : float = data.get('start')
+        finish : float = data.get('finish')
+
+        user = get_user_by_jwt(jwt)
+        update_event(id, start, finish, user['id'])
+
+        return 'success'
+
+    except Exception as e:
+        return str(e), 400
+
 @app.route('/add_topic', methods=['POST'])
 def add_topic_():
     try:
