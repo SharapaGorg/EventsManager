@@ -31,6 +31,7 @@ export default {
   mounted() {
     this.renderEvent()
 
+
     let element = this.$refs.block
     let x = 0
     let y = 0
@@ -108,7 +109,7 @@ export default {
     },
     applyTime() {
       let date = this.pixelsToTime(this.initIndent + this.leftTranslate)
-      console.log(date)
+      console.log('[local event time]', date)
     }
   },
   watch: {

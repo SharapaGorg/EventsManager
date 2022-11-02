@@ -5,15 +5,19 @@ Interaction with events table
 from models import Event
 from controller import Session, engine
 from sqlalchemy import select
+from utils import parse_date
 
 def get_init_events(
     user_id : int,
+    date,
     start_timestamp: float = None,
     finish_timestamp: float = None,
     topic_id : int = None
 ) -> list:
     events = select(Event).where(Event.user_id == user_id)
     session = Session()
+
+    events = events.where(Event.date == date)
 
     if start_timestamp is not None:
         events = events.where(Event.start_timestamp > start_timestamp)
@@ -27,11 +31,12 @@ def get_init_events(
 
 def get_events(
     user_id : int,
+    date : str,
     start_timestamp: float = None,
     finish_timestamp: float = None,
     topic_id : int = None
 ) -> list:
-    events = get_init_events(user_id, start_timestamp, finish_timestamp, topic_id)
+    events = get_init_events(user_id, date, start_timestamp, finish_timestamp, topic_id)
 
     for i in range(len(events)):
         e = events[i]
@@ -76,6 +81,7 @@ def get_event(id: int) -> dict:
 
 def add_event(
     title: str,
+    date : str,
     link: str,
     description: str,
     start: float,
@@ -88,6 +94,7 @@ def add_event(
 
     event = Event(
         title=title,
+        date=date,
         link=link,
         description=description,
         start_timestamp=start,

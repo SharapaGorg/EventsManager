@@ -1,9 +1,9 @@
 export const state = () => ({
-  url : 'http://127.0.0.1:5000/',
-  timeStep : 900, // 15 minutes
-  selectedEvent : NaN,
-  currentUser : '',
-  selectedDate : new Date() // day/month/year
+  url: 'http://127.0.0.1:5000/',
+  timeStep: 900, // 15 minutes
+  selectedEvent: NaN,
+  currentUser: '',
+  selectedDate: new Date() // day/month/year
 })
 
 export const mutations = {
@@ -18,5 +18,11 @@ export const mutations = {
   },
   setSelectedTime(state, value) {
     state.selectedDate = value
+  }
+}
+
+export const getters = {
+  getDate: (state) => {
+    return state.selectedDate
   }
 }

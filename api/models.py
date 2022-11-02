@@ -17,6 +17,7 @@ class Event(Base):
     title = Column(Text)
     link = Column(Text, nullable=True)
     description = Column(Text)
+    date = Column(Text)
     start_timestamp = Column(Float)
     finish_timestamp = Column(Float)
     topic_id = Column(Integer, ForeignKey("topics.id"))

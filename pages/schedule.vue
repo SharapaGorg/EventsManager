@@ -8,7 +8,7 @@
 
     <event-modal
       v-show="showEventModal"
-      @closeEventModal = "showEventModal = false"
+      @closeEventModal="showEventModal = false"
     />
 
 
@@ -62,20 +62,20 @@
     </div>
 
     <div class="events" ref="events">
-<!--      <nuxt-link-->
-<!--        v-for="event in events"-->
-<!--        :key="event.id"-->
-<!--        :to='"events/" + event.id'>-->
-          <Event
-            v-show="event.topic_id !== 0"
-            v-for="event in events"
-            :key="event.id"
-            :id="event.id"
-            :start="event.start"
-            :finish="event.finish"
-            :topic="event.topic_id"
-            :title="event.title"/>
-<!--      </nuxt-link>-->
+      <!--      <nuxt-link-->
+      <!--        v-for="event in events"-->
+      <!--        :key="event.id"-->
+      <!--        :to='"events/" + event.id'>-->
+      <Event
+        v-show="event.topic_id !== 0"
+        v-for="event in events"
+        :key="event.id"
+        :id="event.id"
+        :start="event.start"
+        :finish="event.finish"
+        :topic="event.topic_id"
+        :title="event.title"/>
+      <!--      </nuxt-link>-->
     </div>
 
 
@@ -89,7 +89,7 @@
       <SimpleEvent
         v-for="event in freeEvents"
         :key="event.id"
-        :title = "event.title"
+        :title="event.title"
         :id="event.id"
       />
 
@@ -110,8 +110,12 @@ export default {
       showSideBar: false,
       selectedEvent: {},
       showTopicModal: false,
-      showEventModal : false,
+      showEventModal: false,
       freeEvents: [],
+      currentDate: new Date(),
+      currentDay: 1,
+      currentMonth: 1,
+      currentYear: 2022,
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
   },
@@ -120,10 +124,10 @@ export default {
     if (localTimeStep) {
       this.setTimeStep(parseInt(localTimeStep))
     }
-
+    this.changeDay(0)
     this.renderTimeline();
 
-    this.events = await this.$post('events', {})
+    await this.getEvents()
     this.topics = await this.$post('topics', {})
     this.freeEvents = await this.getFreeEvents()
 
@@ -139,8 +143,6 @@ export default {
     if (localDate) {
       this.selectDate(localDate)
     }
-
-    let currentDate = this.$store.state.selectedDate
 
   },
   methods: {
@@ -182,12 +184,18 @@ export default {
       this.timePoints = timePoints
     },
     changeDay(sign) {
-      let date = this.currentDate
-      date.setDate(date.getDate() + sign)
+      let date = this.$store.state.selectedDate
+      this.currentDate = date
 
-      this.selectDate(date)
+      this.currentDate.setDate(this.currentDate.getDate() + sign)
 
-      console.log(this.$store.state.selectedDate)
+      this.currentDay = this.currentDate.getDate()
+      this.currentMonth = this.months[this.currentDate.getMonth()]
+      this.currentYear = this.currentDate.getFullYear()
+
+      this.selectDate(this.currentDate)
+
+      // rerender events
     },
     editTimeStep(step) {
       if (this.timeStep + step <= 0 || this.timeStep + step > 60 * 60 * 2) {
@@ -199,7 +207,12 @@ export default {
     },
     async getFreeEvents() {
       return await this.$post('events', {
-        'topic_id' : 0
+        'topic_id': 0
+      })
+    },
+    async getEvents() {
+      this.events = await this.$post('events', {
+        'date': `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`
       })
     }
   },
@@ -210,22 +223,13 @@ export default {
     url() {
       return this.$store.state.url
     },
-    currentDate() {
-      return this.$store.state.selectedDate
-    },
-    currentYear() {
-      return this.currentDate.getYear() + 1900
-    },
-    currentMonth() {
-      return this.months[this.currentDate.getMonth()]
-    },
-    currentDay() {
-      return this.currentDate.getDay() - 1
-    }
   },
   watch: {
     '$store.state.timeStep'(newValue, oldValue) {
       this.renderTimeline()
+    },
+    async currentDay(value) {
+      await this.getEvents()
     },
     async '$store.state.selectedEvent'(newValue, oldValue) {
       if (isNaN(newValue)) {
