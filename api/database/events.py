@@ -44,7 +44,8 @@ def get_init_events(
     events = select(Event).where(Event.user_id == user_id)
     session = Session()
 
-    events = events.where(Event.date == date)
+    if topic_id != 0:
+        events = events.where(Event.date == date)
 
     if start_timestamp is not None:
         events = events.where(Event.start_timestamp > start_timestamp)

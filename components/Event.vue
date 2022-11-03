@@ -20,7 +20,7 @@ import interact from 'interactjs'
 
 export default {
   name: "Event",
-  props: ['start', 'finish', 'id', 'topic', 'title'],
+  props: ['start', 'finish', 'id', 'topic', 'title', 'topic_number'],
   data() {
     return {
       initIndent: 0,
@@ -31,7 +31,6 @@ export default {
   },
   mounted() {
     this.renderEvent()
-
 
     let element = this.$refs.block
     let x = 0
@@ -88,7 +87,7 @@ export default {
       this.initIndent = blockIndent
 
       block.style.left = blockIndent + "px"
-      block.style.top = 4 + (this.topic - 1) * 60 + 'px'
+      block.style.top = 4 + (this.topic_number + 1) * 60 + 'px'
 
       block.style.width = blockWidth + 'px'
     },

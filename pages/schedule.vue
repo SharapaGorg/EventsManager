@@ -74,7 +74,9 @@
         :start="event.start"
         :finish="event.finish"
         :topic="event.topic_id"
-        :title="event.title"/>
+        :title="event.title"
+        :topic_number="topicNumber(event.topic_id)"
+      />
       <!--      </nuxt-link>-->
     </div>
 
@@ -143,7 +145,6 @@ export default {
     if (localDate) {
       this.selectDate(localDate)
     }
-
   },
   methods: {
     async $post(link, options) {
@@ -213,11 +214,16 @@ export default {
     },
     async getEvents() {
       this.events = await this.$post('events', {
-        date:  `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`
+        date: `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`
       })
     }
   },
   computed: {
+    topicNumber() {
+      return (topic_id) => {
+        return this.topics.indexOf(this.topics.find(x => x.id === topic_id))
+      }
+    },
     timeStep() {
       return this.$store.state.timeStep
     },
