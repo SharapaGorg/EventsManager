@@ -21,6 +21,44 @@
         <div class="warning">Пожалуйста, введите ссылку на событие!</div>
       </div>
 
+      <div class="time-header">Время события</div>
+
+      <div class="w-[450px] mx-auto mt-1 mb-3">
+        <span>Начало</span>
+        <input
+          placeholder="12"
+          class="time-field"
+          type="number"
+          v-model="startHoursTime"
+        />
+        <input
+          placeholder="30"
+          class="time-field"
+          type="number"
+          v-model="startMinutesTime"
+        />
+        <br/>
+        <span>Конец</span>
+        <input
+          placeholder="12"
+          class="time-field"
+          type="number"
+          v-model="finishHoursTime"
+        />
+        <input
+          placeholder="30"
+          class="time-field"
+          type="number"
+          v-model="finishMinutesTime"
+        />
+      </div>
+
+      <Dropdown
+        :workers="topics"
+        :worker="topics[0]"
+        class="mx-auto"
+      />
+
       <div class="w-[450px] grid grid-cols-2 justify-items-end w-fit mx-auto">
         <div class="col-start-2 mt-2">
           <div class="add-button" @click="$emit('closeEventModal')">Закрыть</div>
@@ -39,12 +77,32 @@ export default {
       title: '',
       link : '',
       showWarningTitle: false,
-      showWarningLink : false
+      showWarningLink : false,
+      startHoursTime : 1,
+      startMinutesTime : 30,
+      finishHoursTime : 1,
+      finishMinutesTime : 30,
+      topics : [{
+        id : 0,
+        title : "Не выбрано"
+      }]
     }
   },
   async mounted() {
+    let topics = await this.$post('topics', {})
+
+    for (let elem of topics) {
+      this.topics.push(elem)
+    }
+
+    console.log(this.topics)
   },
   methods: {
+    async $post(link, options) {
+      options['JWT_TOKEN'] = this.$cookies.get('JWT_TOKEN')
+
+      return await this.$axios.$post(this.url + link, options)
+    },
     addEvent() {
       // validation fields
       if (!this.title) {
@@ -54,10 +112,9 @@ export default {
         this.showWarningLink = true
       }
 
-      if (!this.title || !this.link) {
+      if (!this.title || !this.link || !this.startMinutesTime || !this.startHoursTime || !this.finishHoursTime || !this.finishMinutesTime) {
         return
       }
-
     }
   },
   computed: {
@@ -86,7 +143,7 @@ export default {
 }
 
 .topic-field {
-  @apply px-2 py-1 outline-none rounded-md w-[350px] bg-[#e1dfdf];
+  @apply px-2 py-1 outline-none rounded-md w-[350px];
 }
 
 .add-button {
@@ -96,6 +153,15 @@ export default {
 
 .field {
   @apply w-fit mx-auto flex mb-1
+}
+
+.time-header {
+  @apply w-full block mx-auto text-center;
+  @apply text-[#e1dfdf]
+}
+
+.time-field {
+  @apply w-[50px] rounded-sm px-1
 }
 
 </style>

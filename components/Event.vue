@@ -139,15 +139,11 @@ export default {
         finish_time.getSeconds()
       )
 
-      console.log(s)
-      console.log(f)
-
-      let req = await this.$post('update_event', {
+      await this.$post('update_event', {
         event_id : this.id,
         start : s.getTime(),
         finish : f.getTime()
       })
-      console.log(req)
     }
   },
   watch: {

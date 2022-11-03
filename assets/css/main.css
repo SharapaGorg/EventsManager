@@ -26,3 +26,7 @@ html {
 .events-window {
 
 }
+
+input {
+  @apply outline-none;
+}
