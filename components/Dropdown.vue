@@ -30,6 +30,7 @@ export default {
   methods: {
     chooseWorker(id) {
       this.worker = this.workers.find(elem => elem.id === id)
+      this.$store.commit('setSelectedTopic', this.worker.id)
     }
   },
   data() {

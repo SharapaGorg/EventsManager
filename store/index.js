@@ -3,7 +3,8 @@ export const state = () => ({
   timeStep: 900, // 15 minutes
   selectedEvent: NaN,
   currentUser: '',
-  selectedDate: new Date() // day/month/year
+  selectedDate: new Date(), // day/month/year,
+  selectedTopic : 0
 })
 
 export const mutations = {
@@ -18,6 +19,9 @@ export const mutations = {
   },
   setSelectedTime(state, value) {
     state.selectedDate = value
+  },
+  setSelectedTopic(state, value) {
+    state.selectedTopic = value
   }
 }
 

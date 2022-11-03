@@ -21,6 +21,11 @@
         <div class="warning">Пожалуйста, введите ссылку на событие!</div>
       </div>
 
+      <div class="field">
+        <span>Описание</span>
+        <input class="topic-field" placeholder="Что-нибудь" v-model="desc"/>
+      </div>
+
       <div class="time-header">Время события</div>
 
       <div class="w-[450px] mx-auto mt-1 mb-3">
@@ -78,6 +83,7 @@ export default {
       link : '',
       showWarningTitle: false,
       showWarningLink : false,
+      desc : '',
       startHoursTime : 1,
       startMinutesTime : 30,
       finishHoursTime : 1,
@@ -85,7 +91,8 @@ export default {
       topics : [{
         id : 0,
         title : "Не выбрано"
-      }]
+      }],
+      months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
   },
   async mounted() {
@@ -103,7 +110,7 @@ export default {
 
       return await this.$axios.$post(this.url + link, options)
     },
-    addEvent() {
+    async addEvent() {
       // validation fields
       if (!this.title) {
         this.showWarningTitle = true
@@ -115,11 +122,41 @@ export default {
       if (!this.title || !this.link || !this.startMinutesTime || !this.startHoursTime || !this.finishHoursTime || !this.finishMinutesTime) {
         return
       }
+
+      let date = `${this.selectedDate.getDate()}/${this.selectedDate.getMonth() + 1}/${this.selectedDate.getFullYear()}`
+      let start = new Date();
+      let finish = new Date();
+
+      start.setHours(this.startHoursTime)
+      start.setMinutes(this.startMinutesTime)
+      start.setSeconds(0)
+
+      finish.setHours(this.finishHoursTime)
+      finish.setMinutes(this.finishMinutesTime)
+      finish.setSeconds(0)
+
+      console.log(this.selectedTopic)
+
+      await this.$post('add_event', {
+        title : this.title,
+        link : this.link,
+        description : this.desc,
+        start : start.getTime() / 1000,
+        finish : finish.getTime() / 1000,
+        topic_id : this.selectedTopic,
+        date : date
+      })
     }
   },
   computed: {
     url() {
       return this.$store.state.url
+    },
+    selectedTopic() {
+      return this.$store.state.selectedTopic
+    },
+    selectedDate() {
+      return this.$store.state.selectedDate
     }
   }
 }

@@ -98,11 +98,12 @@ def add_event_():
         start: float = data.get('start')
         finish: float = data.get('finish')
         topic_id : int = data.get('topic_id')
+        date : str = data.get('date')
         jwt : str = data.get('JWT_TOKEN')
 
         user = get_user_by_jwt(jwt)
 
-        add_event(title, link, description, start, finish, topic_id, user['id'])
+        add_event(title, date, link, description, start, finish, topic_id, user['id'])
 
         return 'success'
 
