@@ -20,7 +20,7 @@ export default {
   @apply text-center font-bold;
 }
 
-.simple-event span {
+.simple-event span { 
   @apply h-[23px] overflow-hidden block;
 }
 
