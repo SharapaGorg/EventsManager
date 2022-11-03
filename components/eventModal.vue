@@ -135,8 +135,6 @@ export default {
       finish.setMinutes(this.finishMinutesTime)
       finish.setSeconds(0)
 
-      console.log(this.selectedTopic)
-
       await this.$post('add_event', {
         title : this.title,
         link : this.link,
@@ -146,6 +144,18 @@ export default {
         topic_id : this.selectedTopic,
         date : date
       })
+
+      this.resetForm()
+    },
+    resetForm() {
+      this.title = ''
+      this.link = ''
+      this.desc = ''
+      this.startHoursTime = 1
+      this.startMinutesTime = 30
+      this.finishHoursTime = 2
+      this.finishMinutesTime = 30
+      this.$store.commit('setSelectedTopic', 0)
     }
   },
   computed: {

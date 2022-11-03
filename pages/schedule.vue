@@ -207,12 +207,13 @@ export default {
     },
     async getFreeEvents() {
       return await this.$post('events', {
-        'topic_id': 0
+        date: `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`,
+        topic_id: 0
       })
     },
     async getEvents() {
       this.events = await this.$post('events', {
-        'date': `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`
+        date:  `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`
       })
     }
   },
