@@ -17,7 +17,6 @@
 
 import interact from 'interactjs'
 
-
 export default {
   name: "Event",
   props: ['start', 'finish', 'id', 'topic', 'title', 'topic_number'],

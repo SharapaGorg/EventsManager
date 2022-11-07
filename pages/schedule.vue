@@ -88,12 +88,34 @@
         </div>
       </div>
 
-      <SimpleEvent
+      <div
         v-for="event in freeEvents"
         :key="event.id"
-        :title="event.title"
-        :id="event.id"
-      />
+        class="free-event"
+        id="yes-drop"
+      >
+        <SimpleEvent
+          :title="event.title"
+          :id="event.id"
+        />
+      </div>
+
+<!--      <SimpleEvent-->
+<!--        v-for="event in freeEvents"-->
+<!--        :key="event.id"-->
+<!--        :title="event.title"-->
+<!--        :id="event.id"-->
+<!--        class="free-event"-->
+<!--      />-->
+
+      <div
+        v-for="event in freeEvents"
+        :key="event.id"
+        class="w-[150px] h-[60px] rounded-md bg-blue-500 free-event"
+        id='yes-drop'
+      >
+        SOMETHING
+      </div>
 
     </div>
 
@@ -102,9 +124,11 @@
 
 <script>
 
+import interact from 'interactjs'
+
 export default {
   name: "schedule",
-  layout : 'base',
+  layout: 'base',
   data() {
     return {
       timePoints: [],
@@ -146,6 +170,61 @@ export default {
     if (localDate) {
       this.selectDate(localDate)
     }
+
+    let base = this
+
+    // enable draggables to be dropped into this (move events into topic)
+    interact('.topic').dropzone({
+      // only accept elements matching this CSS selector
+      accept: '#yes-drop',
+      // Require a 75% element overlap for a drop to be possible
+      overlap: .75,
+
+      // listen for drop related events:
+
+      ondropactivate: function (event) {
+        // add active dropzone feedback
+        console.log('dropped')
+        // event.target.classList.add('drop-active')
+      },
+      ondragenter: function (event) {
+        let draggableElement = event.relatedTarget
+        let dropzoneElement = event.target
+
+        // feedback the possibility of a drop
+        dropzoneElement.classList.add('drop-target')
+        draggableElement.classList.add('can-drop')
+        draggableElement.textContent = 'Dragged in'
+      },
+      ondragleave: function (event) {
+        // remove the drop feedback style
+        event.target.classList.remove('drop-target')
+        event.relatedTarget.classList.remove('can-drop')
+        event.relatedTarget.textContent = 'Dragged out'
+      },
+      ondrop: function (event) {
+        event.relatedTarget.textContent = 'Dropped'
+      },
+      ondropdeactivate: function (event) {
+        // remove active dropzone feedback
+        event.target.classList.remove('drop-active')
+        event.target.classList.remove('drop-target')
+      }
+    })
+
+    interact('.free-event')
+      .draggable({
+        inertia: true,
+        modifiers: [
+          interact.modifiers.restrictRect({
+            restriction: 'window',
+            endOnly: true
+          })
+        ],
+        autoScroll: true,
+        // dragMoveListener from the dragging demo above
+        listeners: {move: base.dragMoveListener}
+      })
   },
   methods: {
     async $post(link, options) {
@@ -167,6 +246,20 @@ export default {
         id: id
       })
     },
+    dragMoveListener(event) {
+      let target = event.target
+      // keep the dragged position in the data-x/data-y attributes
+      let x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+      let y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+
+      // translate the element
+      target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+
+      // update the position attributes
+      target.setAttribute('data-x', x)
+      target.setAttribute('data-y', y)
+    }
+    ,
     renderTimeline() {
       let day = 60 * 60 * 24
       let timePoints = []
@@ -184,7 +277,8 @@ export default {
       }
 
       this.timePoints = timePoints
-    },
+    }
+    ,
     changeDay(sign) {
       let date = this.$store.state.selectedDate
       this.currentDate = date
@@ -198,7 +292,8 @@ export default {
       this.selectDate(this.currentDate)
 
       // rerender events
-    },
+    }
+    ,
     editTimeStep(step) {
       if (this.timeStep + step <= 0 || this.timeStep + step > 60 * 60 * 2) {
         return
@@ -206,13 +301,15 @@ export default {
 
       localStorage.setItem('timeStep', this.timeStep + step)
       this.setTimeStep(this.timeStep + step)
-    },
+    }
+    ,
     async getFreeEvents() {
       return await this.$post('events', {
         date: `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`,
         topic_id: 0
       })
-    },
+    }
+    ,
     async getEvents() {
       this.events = await this.$post('events', {
         date: `${this.currentDay}/${this.months.indexOf(this.currentMonth) + 1}/${this.currentYear}`
@@ -224,21 +321,27 @@ export default {
       return (topic_id) => {
         return this.topics.indexOf(this.topics.find(x => x.id === topic_id))
       }
-    },
+    }
+    ,
     timeStep() {
       return this.$store.state.timeStep
-    },
+    }
+    ,
     url() {
       return this.$store.state.url
-    },
-  },
+    }
+    ,
+  }
+  ,
   watch: {
     '$store.state.timeStep'(newValue, oldValue) {
       this.renderTimeline()
-    },
+    }
+    ,
     async currentDay(value) {
       await this.getEvents()
-    },
+    }
+    ,
     async '$store.state.selectedEvent'(newValue, oldValue) {
       if (isNaN(newValue)) {
         this.showSideBar = false
