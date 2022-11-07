@@ -103,7 +103,8 @@
 <script>
 
 export default {
-  name: "events",
+  name: "schedule",
+  layout : 'base',
   data() {
     return {
       timePoints: [],

@@ -5,6 +5,7 @@
 <script>
 export default {
   name: "account",
+  layout: 'base',
   data() {
     return {
       login: ''

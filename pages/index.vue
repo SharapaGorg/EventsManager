@@ -1,44 +1,93 @@
 <template>
-  <div ref="root" class='relative top-[70px]'>
-    Index page
+  <div class="h-screen w-screen overflow-hidden">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" class="gradient-clouds">
+      <defs>
+        <radialGradient id="Gradient1" cx="50%" cy="50%" fx="10%" fy="50%" r=".5">
+          <animate attributeName="fx" dur="34s" values="0%;3%;0%" repeatCount="indefinite" />
+          <stop offset="0%" stop-color="#ff0" />
+          <stop offset="100%" stop-color="#ff00" />
+        </radialGradient>
+        <radialGradient id="Gradient2" cx="50%" cy="50%" fx="10%" fy="50%" r=".5">
+          <animate attributeName="fx" dur="23.5s" values="0%;3%;0%" repeatCount="indefinite" />
+          <stop offset="0%" stop-color="#0ff" />
+          <stop offset="100%" stop-color="#0ff0" />
+        </radialGradient>
+        <radialGradient id="Gradient3" cx="50%" cy="50%" fx="50%" fy="50%" r=".5">
+          <animate attributeName="fx" dur="21.5s" values="0%;3%;0%" repeatCount="indefinite" />
+          <stop offset="0%" stop-color="#f0f" />
+          <stop offset="100%" stop-color="#f0f0" />
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#Gradient1)">
+        <animate attributeName="x" dur="20s" values="25%;0%;25%" repeatCount="indefinite" />
+        <animate attributeName="y" dur="21s" values="0%;25%;0%" repeatCount="indefinite" />
+        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="17s" repeatCount="indefinite" />
+      </rect>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#Gradient2)">
+        <animate attributeName="x" dur="23s" values="-25%;0%;-25%" repeatCount="indefinite" />
+        <animate attributeName="y" dur="24s" values="0%;50%;0%" repeatCount="indefinite" />
+        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="18s" repeatCount="indefinite" />
+      </rect>
+      <rect x="0" y="0" width="100%" height="100%" fill="url(#Gradient3)">
+        <animate attributeName="x" dur="25s" values="0%;25%;0%" repeatCount="indefinite" />
+        <animate attributeName="y" dur="26s" values="0%;25%;0%" repeatCount="indefinite" />
+        <animateTransform attributeName="transform" type="rotate" from="360 50 50" to="0 50 50" dur="19s" repeatCount="indefinite" />
+      </rect>
+    </svg>
 
-    <dropdown
-      :worker="topics[0]"
-      :workers="topics"
-    />
+    <div class="fixed top-[45vh] w-full">
+      <div class="content-wrapper">
+        <h1 class="index-header">
+          Event Manager
+        </h1>
+
+        <nuxt-link to="schedule">
+          <div class="try-button">Try it out</div>
+        </nuxt-link>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage',
   data() {
     return {
-      topics : [
-        {
-          id : 1,
-          title: "Что-нибудь"
-        }
-      ]
-    }
-  },
-  async mounted() {
-    this.topics = await this.$axios.$post(this.url + 'topics', {
-      'JWT_TOKEN' : this.$cookies.get('JWT_TOKEN')
-    })
 
-    console.log(this.topics)
-  },
-  computed: {
-    url() {
-      return this.$store.state.url
     }
+  },
+  mounted() {
+
   }
 }
 </script>
 
 <style>
 
+.gradient-clouds {
+  @apply min-h-[100vh]
+}
 
+.content-wrapper {
+  @apply backdrop-blur-xl p-4 rounded-lg w-fit mx-auto;
+}
+
+.try-button {
+  transform : translateX(80px);
+  transition: all .4s ease;
+  @apply px-2 py-1 text-white border-[1px] border-white;
+  @apply w-fit mx-auto rounded-sm cursor-pointer;
+}
+
+.try-button:hover {
+  @apply bg-white text-[#2C2F33]
+}
+
+.index-header {
+  font-family: 'Josefin Sans', sans-serif;
+  @apply w-fit mx-auto text-center;
+  @apply font-bold text-white text-6xl
+}
 
 </style>
