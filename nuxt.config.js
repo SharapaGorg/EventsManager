@@ -50,6 +50,6 @@ export default {
   build: {
   },
   router: {
-    base: '/'
+    base: '/EventsManager/'
   }
 }
