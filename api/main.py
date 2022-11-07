@@ -220,4 +220,4 @@ finish = start + datetime.timedelta(hours=4)
 
 # add_event("Турнир по ГТО", "2/11/2022", "https://jut.su/", "Базируем основную базу", start.timestamp(), finish.timestamp(), 3, 1)
 
-app.run(host=HOST, port=PORT, debug=True)
+app.run(host=HOST, port=PORT, debug=True, ssl_context='adhoc')
