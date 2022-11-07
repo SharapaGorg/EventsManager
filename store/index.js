@@ -1,5 +1,6 @@
 export const state = () => ({
-  url: 'http://127.0.0.1:5000/',
+  // url: 'http://127.0.0.1:5000/',
+  url : 'http://185.231.153.104:4002/',
   timeStep: 900, // 15 minutes
   selectedEvent: NaN,
   currentUser: '',
