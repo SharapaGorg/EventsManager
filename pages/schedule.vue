@@ -66,7 +66,7 @@
       <!--        v-for="event in events"-->
       <!--        :key="event.id"-->
       <!--        :to='"events/" + event.id'>-->
-      <Event
+      <lazy-event
         v-show="event.topic_id !== 0"
         v-for="event in events"
         :key="event.id"
@@ -75,7 +75,6 @@
         :finish="event.finish"
         :topic="event.topic_id"
         :title="event.title"
-        :topic_number="topicNumber(event.topic_id)"
       />
       <!--      </nuxt-link>-->
     </div>
@@ -91,7 +90,7 @@
       <div
         v-for="event in freeEvents"
         :key="event.id"
-        class="free-event"
+        class="free-event h-[60px] my-2"
         id="yes-drop"
       >
         <SimpleEvent
@@ -108,17 +107,7 @@
 <!--        class="free-event"-->
 <!--      />-->
 
-      <div
-        v-for="event in freeEvents"
-        :key="event.id"
-        class="w-[150px] h-[60px] rounded-md bg-blue-500 free-event"
-        id='yes-drop'
-      >
-        SOMETHING
-      </div>
-
     </div>
-
   </div>
 </template>
 
@@ -158,6 +147,8 @@ export default {
     this.topics = await this.$post('topics', {})
     this.freeEvents = await this.getFreeEvents()
 
+    this.$store.commit('setTopics', this.topics)
+
     // cancel selecting event
     this.$refs.events.addEventListener('click', (event) => {
       this.selectEvent(NaN)
@@ -172,41 +163,34 @@ export default {
     }
 
     let base = this
-
-    // enable draggables to be dropped into this (move events into topic)
     interact('.topic').dropzone({
-      // only accept elements matching this CSS selector
       accept: '#yes-drop',
-      // Require a 75% element overlap for a drop to be possible
       overlap: .75,
-
-      // listen for drop related events:
-
       ondropactivate: function (event) {
-        // add active dropzone feedback
-        console.log('dropped')
-        // event.target.classList.add('drop-active')
       },
       ondragenter: function (event) {
         let draggableElement = event.relatedTarget
         let dropzoneElement = event.target
 
-        // feedback the possibility of a drop
         dropzoneElement.classList.add('drop-target')
         draggableElement.classList.add('can-drop')
-        draggableElement.textContent = 'Dragged in'
       },
       ondragleave: function (event) {
-        // remove the drop feedback style
         event.target.classList.remove('drop-target')
         event.relatedTarget.classList.remove('can-drop')
-        event.relatedTarget.textContent = 'Dragged out'
       },
       ondrop: function (event) {
-        event.relatedTarget.textContent = 'Dropped'
+        console.log('dropped')
+        let text = event.relatedTarget.textContent
+        let e = base.freeEvents.filter(x => x.title === text)[0]
+        let t = base.topics.filter(x => x.title === event.target.innerText)[0]
+
+        e.topic_id = t.id
+
+        base.events.push(e)
+        base.freeEvents = base.freeEvents.filter(x => x.title !== text)
       },
       ondropdeactivate: function (event) {
-        // remove active dropzone feedback
         event.target.classList.remove('drop-active')
         event.target.classList.remove('drop-target')
       }
@@ -222,7 +206,6 @@ export default {
           })
         ],
         autoScroll: true,
-        // dragMoveListener from the dragging demo above
         listeners: {move: base.dragMoveListener}
       })
   },

@@ -19,16 +19,21 @@ import interact from 'interactjs'
 
 export default {
   name: "Event",
-  props: ['start', 'finish', 'id', 'topic', 'title', 'topic_number'],
+  props: ['start', 'finish', 'id', 'topic', 'title'],
   data() {
     return {
       initIndent: 0,
       step: 85.2,
       leftTranslate: 0,
-      blockWidth: 0
+      blockWidth: 0,
+      topic_number : 0,
+      topics: []
     }
   },
   mounted() {
+    this.topics = this.$store.state.topics
+    this.topic_number = this.topics.indexOf(this.topics.find(x => x.id === this.topic))
+
     this.renderEvent()
 
     let element = this.$refs.block
@@ -86,7 +91,7 @@ export default {
       this.initIndent = blockIndent
 
       block.style.left = blockIndent + "px"
-      block.style.top = 4 + (this.topic_number + 1) * 60 + 'px'
+      block.style.top = 4 + (this.topic_number) * 60 + 'px'
 
       block.style.width = blockWidth + 'px'
     },
@@ -138,13 +143,22 @@ export default {
       )
 
       await this.$post('update_event', {
-        event_id : this.id,
-        start : s.getTime(),
-        finish : f.getTime()
+        event_id: this.id,
+        start: s.getTime(),
+        finish: f.getTime()
       })
     }
   },
   watch: {
+    '$store.state.topics' (value) {
+      let topic = value.find(x => x.id === this.topic)
+      this.topic_number = value.indexOf(topic)
+
+      this.renderEvent()
+    },
+    '$store.state.events'(value) {
+      this.renderEvent()
+    },
     '$store.state.timeStep'(oldValue, newValue) {
       this.renderEvent()
     },

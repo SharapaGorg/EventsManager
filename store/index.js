@@ -5,7 +5,9 @@ export const state = () => ({
   selectedEvent: NaN,
   currentUser: '',
   selectedDate: new Date(), // day/month/year,
-  selectedTopic : 0
+  selectedTopic : 0,
+  topics : [],
+  events: []
 })
 
 export const mutations = {
@@ -23,6 +25,12 @@ export const mutations = {
   },
   setSelectedTopic(state, value) {
     state.selectedTopic = value
+  },
+  setTopics(state, value) {
+    state.topics = value
+  },
+  setEvents(state, value) {
+    state.events = value
   }
 }
 

@@ -101,8 +101,6 @@ export default {
     for (let elem of topics) {
       this.topics.push(elem)
     }
-
-    console.log(this.topics)
   },
   methods: {
     async $post(link, options) {
