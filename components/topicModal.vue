@@ -46,7 +46,7 @@ export default {
   methods: {
     async getTopics() {
       return await this.$axios.$post(this.url + 'topics', {
-        'JWT_TOKEN': this.$cookies.get('JWT_TOKEN')
+        'JWT': this.$cookies.get('JWT')
       })
     },
     async addTopic() {
@@ -55,7 +55,7 @@ export default {
         return
       }
       await this.$axios.$post(this.url + 'add_topic', {
-        'JWT_TOKEN': this.$cookies.get('JWT_TOKEN'),
+        'JWT': this.$cookies.get('JWT'),
         'title': this.topicTitle
       })
       this.topicTitle = ''

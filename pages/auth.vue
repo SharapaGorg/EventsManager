@@ -6,7 +6,7 @@
 export default {
   name: "auth",
   async mounted() {
-    if (this.$cookies.get('JWT_TOKEN')) {
+    if (this.$cookies.get('JWT')) {
         await this.$router.replace('/account')
     }
   }
@@ -17,7 +17,6 @@ export default {
 
 .auth-card {
   @apply w-1/3 rounded-md bg-[#23272A] mx-auto text-[#e1dfdf] px-2 py-3;
-
 }
 
 .field {

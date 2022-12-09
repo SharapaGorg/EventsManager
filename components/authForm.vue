@@ -202,7 +202,7 @@ export default {
           let loginAttempt = await this.loginUser()
 
           if (loginAttempt.status === 'SUCCESS') {
-            this.$cookies.set("JWT_TOKEN", loginAttempt.token, 15)
+            this.$cookies.set("JWT", loginAttempt.token)
             this.setUser(this.loginLogin)
             await this.$router.replace('schedule')
           }
@@ -222,7 +222,7 @@ export default {
           let signUpAttempt = await this.signUp()
 
           if (signUpAttempt.status === 'SUCCESS') {
-            this.$cookies.set("JWT_TOKEN", signUpAttempt.token, 15)
+            this.$cookies.set("JWT", signUpAttempt.token)
             await this.$router.replace('schedule')
           }
           else {
@@ -245,7 +245,6 @@ export default {
       })
     },
     async signUp() {
-
       return await this.$axios.$post(this.url + 'register', {
         login: this.signupLogin,
         password: this.signupPassword

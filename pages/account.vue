@@ -16,9 +16,10 @@ export default {
 
     setTimeout(async () => {
       if (!this.login) {
-        await this.$router.replace('/auth')
+        // await this.$router.replace('/auth')
       }
-    }, 1000)
+    }, 5000)
+
   },
   watch: {
     '$store.state.currentUser'(value) {

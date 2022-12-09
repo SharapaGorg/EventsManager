@@ -136,6 +136,9 @@ export default {
     }
   },
   async mounted() {
+
+    // this.$cookies.remove('JWT')
+
     let localTimeStep = localStorage.getItem('timeStep')
     if (localTimeStep) {
       this.setTimeStep(parseInt(localTimeStep))
@@ -150,12 +153,12 @@ export default {
     this.$store.commit('setTopics', this.topics)
 
     // cancel selecting event
-    this.$refs.events.addEventListener('click', (event) => {
-      this.selectEvent(NaN)
-    })
-    this.$refs.topics.addEventListener('click', (event) => {
-      this.selectEvent(NaN)
-    })
+    // this.$refs.events.addEventListener('click', (event) => {
+    //   this.selectEvent(NaN)
+    // })
+    // this.$refs.topics.addEventListener('click', (event) => {
+    //   this.selectEvent(NaN)
+    // })
 
     let localDate = localStorage.getItem('selectedDate')
     if (localDate) {
@@ -180,10 +183,11 @@ export default {
         event.relatedTarget.classList.remove('can-drop')
       },
       ondrop: function (event) {
-        console.log('dropped')
         let text = event.relatedTarget.textContent
         let e = base.freeEvents.filter(x => x.title === text)[0]
         let t = base.topics.filter(x => x.title === event.target.innerText)[0]
+
+        console.log(event.target.innerText)
 
         e.topic_id = t.id
 
@@ -201,7 +205,7 @@ export default {
         inertia: true,
         modifiers: [
           interact.modifiers.restrictRect({
-            restriction: 'window',
+            restriction: 'parent.parent',
             endOnly: true
           })
         ],
@@ -211,7 +215,12 @@ export default {
   },
   methods: {
     async $post(link, options) {
-      options['JWT_TOKEN'] = this.$cookies.get('JWT_TOKEN')
+      options['JWT'] = this.$cookies.get('JWT')
+
+      if (!options.JWT) {
+        await this.$router.push('/auth')
+        return
+      }
 
       return await this.$axios.$post(this.url + link, options)
     },

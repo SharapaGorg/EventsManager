@@ -40,7 +40,6 @@ export default {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/axios',
     'cookie-universal-nuxt'
-
   ],
   axios: {
     // proxy: true

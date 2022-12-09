@@ -39,14 +39,17 @@ export default {
   },
   async mounted() {
     let user = await this.$axios.$post(this.url + 'user', {
-      'JWT_TOKEN': this.$cookies.get("JWT_TOKEN")
+      'JWT': this.$cookies.get("JWT")
     })
     this.user = user.login
+
     this.$store.commit('setCurrentUser', this.user)
   },
   methods: {
     async logOut() {
-      this.$cookies.remove('JWT_TOKEN')
+      this.$cookies.remove('JWT')
+      console.log(this.$cookies.getAll())
+
       await this.$router.replace('/auth')
 
       this.user = ''

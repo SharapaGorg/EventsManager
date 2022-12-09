@@ -59,8 +59,11 @@ def get_user(login: str) -> dict:
 def login_user(login: str, password: str):
     user = get_user(login)
 
+    if user is None:
+        return False
+
     decrypted = decrypt(user['password'], ENCRYPT_CODE)
-    if user is None or password != decrypted:
+    if password != decrypted:
         return False
 
     return encode(user, JWT_KEY, algorithm=JWT_ALGORITHM)

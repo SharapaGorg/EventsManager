@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     async $post(link, options) {
-      options['JWT_TOKEN'] = this.$cookies.get('JWT_TOKEN')
+      options['JWT'] = this.$cookies.get('JWT')
 
       return await this.$axios.$post(this.url + link, options)
     },

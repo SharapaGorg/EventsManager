@@ -1,10 +1,9 @@
 import datetime
 from sys import argv
-from utils import logger
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from database import *
-from utils.utils import get_user_by_jwt
+from utils import get_user_by_jwt, logger
 
 app = Flask(__name__)
 CORS(app)
@@ -43,14 +42,14 @@ def get_events_():
             finish: float = data.get('finish')
             topic_id : int = data.get('topic_id')
             date : str = data.get('date')
-            jwt : str = data.get('JWT_TOKEN')
+            jwt : str = data.get('JWT')
         
         user = get_user_by_jwt(jwt)
         events = get_events(user['id'], date, start, finish, topic_id)
         return jsonify(events)
 
     except Exception as e:
-        print(e)
+        logger.error(e)
         return str(e), 400
 
 
@@ -63,14 +62,15 @@ def get_topics_():
 
         if data:
             title = data.get('title')
-            jwt = data.get('JWT_TOKEN')
+            jwt = data.get('JWT')
 
         user = get_user_by_jwt(jwt)
         topics = get_topics(user['id'], title)
+
         return jsonify(topics)
 
     except Exception as e:
-        print(e)
+        logger.error(e)
         return str(e), 400
 
 
@@ -99,7 +99,7 @@ def add_event_():
         finish: float = data.get('finish')
         topic_id : int = data.get('topic_id')
         date : str = data.get('date')
-        jwt : str = data.get('JWT_TOKEN')
+        jwt : str = data.get('JWT')
 
         user = get_user_by_jwt(jwt)
 
@@ -108,6 +108,7 @@ def add_event_():
         return 'success'
 
     except Exception as e:
+        logger.error(e)
         return str(e), 400
 
 @app.route('/update_event', methods=['POST'])
@@ -115,7 +116,7 @@ def update_event_():
     try:
         data = request.get_json()
 
-        jwt : str = data.get('JWT_TOKEN')
+        jwt : str = data.get('JWT')
         id : float = data.get('event_id')
         start : float = data.get('start')
         finish : float = data.get('finish')
@@ -126,6 +127,7 @@ def update_event_():
         return 'success'
 
     except Exception as e:
+        logger.error(e)
         return str(e), 400
 
 @app.route('/add_topic', methods=['POST'])
@@ -134,7 +136,7 @@ def add_topic_():
         data = request.get_json()
 
         title : str = data.get('title')
-        jwt : str = data.get('JWT_TOKEN')
+        jwt : str = data.get('JWT')
 
         user = get_user_by_jwt(jwt)
 
@@ -142,6 +144,7 @@ def add_topic_():
         return 'success'
 
     except Exception as e:
+        logger.error(e)
         return str(e), 400
 
 @app.route('/login', methods=['POST'])
@@ -166,7 +169,7 @@ def login_():
         }
 
     except Exception as e:
-        logger.error("[AUTH_LOGIN]", str(e))
+        logger.error(e)
         return "Что-то пошло не так", 400
 
 
@@ -193,7 +196,7 @@ def register_():
         }
 
     except Exception as e:
-        logger.error("[AUTH_REG]", str(e))
+        logger.error(e)
         return "Что-то пошло не так", 400
 
 @app.route('/user', methods=['POST'])
@@ -201,7 +204,7 @@ def get_user_info_():
     try:
         data = request.get_json()
 
-        jwt = data.get('JWT_TOKEN')
+        jwt = data.get('JWT')
 
         if jwt is None:
             return {}
@@ -212,7 +215,7 @@ def get_user_info_():
         return user
 
     except Exception as e:
-        print(e)
+        logger.error(e)
         return str(e), 400
 
 start = datetime.datetime.now() - datetime.timedelta(hours=1)
