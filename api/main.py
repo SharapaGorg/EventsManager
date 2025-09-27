@@ -35,7 +35,7 @@ def get_events_():
     try:
         data = request.get_json()
 
-        start = finish = topic_id = None
+        start = finish = topic_id = date = jwt = None
 
         if data:
             start: float = data.get('start')
@@ -43,8 +43,14 @@ def get_events_():
             topic_id : int = data.get('topic_id')
             date : str = data.get('date')
             jwt : str = data.get('JWT')
-        
+
+        if not jwt:
+            return jsonify({'error': 'JWT token required'}), 401
+
         user = get_user_by_jwt(jwt)
+        if not user:
+            return jsonify({'error': 'Invalid JWT token'}), 401
+
         events = get_events(user['id'], date, start, finish, topic_id)
         return jsonify(events)
 
@@ -58,13 +64,19 @@ def get_topics_():
     try:
         data = request.get_json()
 
-        title = None
+        title = jwt = None
 
         if data:
             title = data.get('title')
             jwt = data.get('JWT')
 
+        if not jwt:
+            return jsonify({'error': 'JWT token required'}), 401
+
         user = get_user_by_jwt(jwt)
+        if not user:
+            return jsonify({'error': 'Invalid JWT token'}), 401
+
         topics = get_topics(user['id'], title)
 
         return jsonify(topics)
@@ -101,7 +113,12 @@ def add_event_():
         date : str = data.get('date')
         jwt : str = data.get('JWT')
 
+        if not jwt:
+            return jsonify({'error': 'JWT token required'}), 401
+
         user = get_user_by_jwt(jwt)
+        if not user:
+            return jsonify({'error': 'Invalid JWT token'}), 401
 
         add_event(title, date, link, description, start, finish, topic_id, user['id'])
 
@@ -121,7 +138,13 @@ def update_event_():
         start : float = data.get('start')
         finish : float = data.get('finish')
 
+        if not jwt:
+            return jsonify({'error': 'JWT token required'}), 401
+
         user = get_user_by_jwt(jwt)
+        if not user:
+            return jsonify({'error': 'Invalid JWT token'}), 401
+
         update_event(id, start, finish, user['id'])
 
         return 'success'
@@ -138,7 +161,12 @@ def add_topic_():
         title : str = data.get('title')
         jwt : str = data.get('JWT')
 
+        if not jwt:
+            return jsonify({'error': 'JWT token required'}), 401
+
         user = get_user_by_jwt(jwt)
+        if not user:
+            return jsonify({'error': 'Invalid JWT token'}), 401
 
         add_topic(user['id'], title)
         return 'success'
@@ -210,8 +238,10 @@ def get_user_info_():
             return {}
 
         user = get_user_by_jwt(jwt)
-        user['password'] = 'NO-READABLE'
+        if not user:
+            return jsonify({'error': 'Invalid JWT token'}), 401
 
+        user['password'] = 'NO-READABLE'
         return user
 
     except Exception as e:

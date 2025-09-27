@@ -5,8 +5,18 @@ Interaction with users table
 from models import User
 from controller import Session, engine
 from sqlalchemy import select
-from cryptocode import encrypt, decrypt
+import hashlib
+import os
 from config import ENCRYPT_CODE, JWT_KEY, JWT_ALGORITHM
+
+def encrypt_password(password: str) -> str:
+    """Simple password hashing using SHA256 with salt"""
+    salt = ENCRYPT_CODE.encode('utf-8')
+    return hashlib.sha256(salt + password.encode('utf-8')).hexdigest()
+
+def verify_password(password: str, hashed: str) -> bool:
+    """Verify password against hash"""
+    return encrypt_password(password) == hashed
 from jwt import encode, decode
 
 
@@ -22,7 +32,7 @@ def add_user(
 
     user = User(
         login=login,
-        password=encrypt(password, ENCRYPT_CODE)
+        password=encrypt_password(password)
     )
 
     session.add(user)
@@ -62,8 +72,7 @@ def login_user(login: str, password: str):
     if user is None:
         return False
 
-    decrypted = decrypt(user['password'], ENCRYPT_CODE)
-    if password != decrypted:
+    if not verify_password(password, user['password']):
         return False
 
     return encode(user, JWT_KEY, algorithm=JWT_ALGORITHM)
